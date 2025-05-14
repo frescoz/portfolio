@@ -1,21 +1,620 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>portfolio</title>
+    <title>La Computer Vision: Storia, Tecniche e Importanza</title>
     <style>
-        body{
-            color:gray;
-            font-family: 'Courier New', Courier, monospace;
-            background-color: black;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
         }
-
-        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background-color: #3498db;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #2980b9;
+            border-bottom: 2px solid #2980b9;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .lab-container {
+            background-color: #e8f4f8;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+        .lab-title {
+            font-weight: bold;
+            color: #2980b9;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        .lab-content {
+            margin-bottom: 20px;
+        }
+        .image-upload {
+            margin: 15px 0;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            max-width: 100%;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+            padding-left: 50px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: -40px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #3498db;
+        }
+        .timeline:before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: #ccc;
+        }
+        .timeline-year {
+            font-weight: bold;
+            color: #3498db;
+            margin-right: 10px;
+        }
+        .conclusion {
+            background-color: #f0f7fb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            border-left: 5px solid #2c3e50;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+            color: #7f8c8d;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .slider-container {
+            margin: 15px 0;
+        }
+        label {
+            display: inline-block;
+            width: 150px;
+        }
     </style>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
-	<script src="sketch.js"></script>
-</body>
-</html>
+    <header>
+        <h1>La Computer Vision</h1>
+        <p>Storia, Tecniche e Importanza nel Mondo Moderno</p>
+    </header>
+
+    <main>
+        <section id="introduzione">
+            <h2>Introduzione alla Computer Vision</h2>
+            <p>La Computer Vision è una disciplina dell'intelligenza artificiale che si propone di insegnare ai computer a "vedere" e interpretare il mondo visivo come fanno gli esseri umani. Questa tecnologia permette alle macchine di identificare, elaborare e analizzare immagini e video, estraendo informazioni significative da essi.</p>
+            
+            <p>Oggi la Computer Vision è alla base di numerose applicazioni che utilizziamo quotidianamente: dai sistemi di riconoscimento facciale nei nostri smartphone, ai veicoli a guida autonoma, fino ai sistemi di sorveglianza intelligente e alle applicazioni mediche per la diagnosi delle malattie.</p>
+        </section>
+
+        <section id="storia">
+            <h2>Storia della Computer Vision</h2>
+            <p>La storia della Computer Vision è caratterizzata da un'evoluzione continua, passando da semplici algoritmi per l'elaborazione delle immagini a sofisticati sistemi di apprendimento automatico. Ecco le tappe fondamentali di questo percorso:</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-year">1960s:</span>
+                    <p>I primi tentativi di Computer Vision nascono nei laboratori di intelligenza artificiale. Il progetto "Summer Vision" al MIT (1966) segna l'inizio ufficiale di questa disciplina, con l'ambizioso obiettivo di descrivere ciò che era presente in un'immagine.</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <span class="timeline-year">1970s:</span>
+                    <p>David Marr sviluppa un framework teorico per la visione computazionale, proponendo che la visione sia un processo di elaborazione dell'informazione che passa per diverse rappresentazioni. Nel frattempo, vengono sviluppati i primi algoritmi per il riconoscimento di bordi e la segmentazione delle immagini.</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <span class="timeline-year">1980s:</span>
+                    <p>Emerge il concetto di "visione attiva" e si sviluppano algoritmi per l'estrazione di caratteristiche, come SIFT (Scale-Invariant Feature Transform). Si lavora sui sistemi di stereoscopia per la percezione della profondità e si introducono i primi tentativi di riconoscimento di oggetti basati su modelli.</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <span class="timeline-year">1990s:</span>
+                    <p>Si sviluppano metodi statistici per il riconoscimento dei pattern. Il rilevamento di volti diventa un'area di ricerca importante e vengono create le prime banche dati di immagini per l'addestramento e i test, come MNIST per il riconoscimento di caratteri scritti a mano.</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <span class="timeline-year">2000s:</span>
+                    <p>L'algoritmo Viola-Jones rivoluziona il rilevamento di oggetti in tempo reale. Si diffondono le Support Vector Machines (SVM) e altri classificatori statistici. La Computer Vision viene integrata in sistemi commerciali come le fotocamere digitali con rilevamento automatico dei volti.</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <span class="timeline-year">2010 - Presente:</span>
+                    <p>L'avvento delle reti neurali convoluzionali (CNN) e del deep learning segna una svolta nella Computer Vision. Nel 2012, AlexNet vince la competizione ImageNet riducendo drasticamente il tasso di errore nel riconoscimento di oggetti. Da allora, si sono sviluppati modelli sempre più sofisticati come YOLO, Mask R-CNN e le architetture Transformer, che hanno portato a progressi impressionanti in compiti come la segmentazione semantica, il rilevamento di oggetti e la comprensione di scene.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="lab-container">
+            <div class="lab-title">Laboratorio 1: Evoluzione della Computer Vision</div>
+            <div class="lab-content">
+                <p>Questo semplice dimostratore ti permette di visualizzare come sono migliorate le capacità di riconoscimento delle immagini nel corso degli anni.</p>
+                
+                <select id="technique-select">
+                    <option value="original">Immagine originale</option>
+                    <option value="early">Tecniche degli anni '70-'80</option>
+                    <option value="hog">Histogram of Oriented Gradients (anni '90-2000)</option>
+                    <option value="cnn">Reti neurali convoluzionali (2010+)</option>
+                </select>
+                
+                <div>
+                    <img id="vision-example" src="/api/placeholder/400/300" alt="Esempio di Computer Vision">
+                </div>
+                
+                <button id="change-example">Cambia immagine</button>
+            </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const select = document.getElementById('technique-select');
+                    const image = document.getElementById('vision-example');
+                    const changeBtn = document.getElementById('change-example');
+                    
+                    let currentImageIndex = 0;
+                    const imageSources = [
+                        "/api/placeholder/400/300", 
+                        "/api/placeholder/400/300", 
+                        "/api/placeholder/400/300"
+                    ];
+                    
+                    select.addEventListener('change', function() {
+                        // Simulazione di diversi stili di elaborazione
+                        switch(select.value) {
+                            case 'original':
+                                image.style.filter = "none";
+                                break;
+                            case 'early':
+                                image.style.filter = "grayscale(100%) contrast(120%)";
+                                break;
+                            case 'hog':
+                                image.style.filter = "grayscale(100%) contrast(150%) brightness(120%)";
+                                break;
+                            case 'cnn':
+                                image.style.filter = "saturate(120%)";
+                                break;
+                        }
+                    });
+                    
+                    changeBtn.addEventListener('click', function() {
+                        currentImageIndex = (currentImageIndex + 1) % imageSources.length;
+                        image.src = imageSources[currentImageIndex];
+                        // Riapplica il filtro corrente
+                        select.dispatchEvent(new Event('change'));
+                    });
+                });
+            </script>
+        </div>
+
+        <section id="fondamenti">
+            <h2>Fondamenti della Computer Vision</h2>
+            
+            <h3>Elaborazione delle Immagini Digitali</h3>
+            <p>Prima di poter "comprendere" un'immagine, un sistema di Computer Vision deve elaborarla. L'elaborazione delle immagini digitali comprende una serie di operazioni di base che trasformano un'immagine in ingresso per migliorarne alcune caratteristiche o estrarre informazioni rilevanti:</p>
+            <ul>
+                <li><strong>Conversione in scala di grigi:</strong> Semplifica l'elaborazione riducendo l'immagine a un solo canale di intensità.</li>
+                <li><strong>Filtri di riduzione del rumore:</strong> Come il filtro gaussiano o il filtro mediano, che attenuano il rumore preservando i dettagli importanti.</li>
+                <li><strong>Regolazione del contrasto e della luminosità:</strong> Per evidenziare le caratteristiche rilevanti dell'immagine.</li>
+                <li><strong>Operazioni morfologiche:</strong> Come l'erosione e la dilatazione, che modificano la forma degli oggetti nell'immagine.</li>
+            </ul>
+        </section>
+
+        <section id="rilevamento-bordi">
+            <h2>Rilevamento dei Bordi</h2>
+            <p>Il rilevamento dei bordi è una delle tecniche fondamentali nella Computer Vision. I bordi rappresentano i confini tra diverse regioni di un'immagine e contengono informazioni cruciali sulla forma degli oggetti. Identificare correttamente i bordi è spesso il primo passo per comprendere il contenuto di un'immagine.</p>
+            
+            <p>Esistono diversi operatori per il rilevamento dei bordi, tra cui:</p>
+            <ul>
+                <li><strong>Operatore di Sobel:</strong> Calcola il gradiente dell'intensità dell'immagine per rilevare i bordi orizzontali e verticali.</li>
+                <li><strong>Operatore di Prewitt:</strong> Simile a Sobel, ma utilizza maschere di convoluzione leggermente diverse.</li>
+                <li><strong>Operatore di Canny:</strong> Un algoritmo più sofisticato che include più fasi, come la riduzione del rumore, il calcolo del gradiente, la soppressione dei non-massimi e la sogliatura con isteresi.</li>
+            </ul>
+        </section>
+
+        <div class="lab-container">
+            <div class="lab-title">Laboratorio 2: Rilevamento dei Bordi</div>
+            <div class="lab-content">
+                <p>Carica un'immagine e osserva come funzionano i diversi operatori di rilevamento dei bordi:</p>
+                
+                <div class="image-upload">
+                    <input type="file" id="edge-image-input" accept="image/*">
+                    <p>o usa un'immagine di esempio:</p>
+                    <button id="use-sample-image">Usa immagine di esempio</button>
+                </div>
+                
+                <div>
+                    <canvas id="original-canvas" width="400" height="300"></canvas>
+                    <canvas id="edge-canvas" width="400" height="300"></canvas>
+                </div>
+                
+                <div class="controls">
+                    <button id="sobel-btn">Operatore di Sobel</button>
+                    <button id="prewitt-btn">Operatore di Prewitt</button>
+                    <button id="canny-btn">Operatore di Canny</button>
+                </div>
+                
+                <div class="slider-container">
+                    <label for="threshold-slider">Soglia:</label>
+                    <input type="range" id="threshold-slider" min="0" max="255" value="100">
+                    <span id="threshold-value">100</span>
+                </div>
+            </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const originalCanvas = document.getElementById('original-canvas');
+                    const edgeCanvas = document.getElementById('edge-canvas');
+                    const originalCtx = originalCanvas.getContext('2d');
+                    const edgeCtx = edgeCanvas.getContext('2d');
+                    const imageInput = document.getElementById('edge-image-input');
+                    const sampleBtn = document.getElementById('use-sample-image');
+                    const sobelBtn = document.getElementById('sobel-btn');
+                    const prewittBtn = document.getElementById('prewitt-btn');
+                    const cannyBtn = document.getElementById('canny-btn');
+                    const thresholdSlider = document.getElementById('threshold-slider');
+                    const thresholdValue = document.getElementById('threshold-value');
+                    
+                    let currentImage = new Image();
+                    let currentOperator = 'sobel';
+                    
+                    // Carica immagine di esempio
+                    sampleBtn.addEventListener('click', function() {
+                        currentImage.src = "/api/placeholder/400/300";
+                        currentImage.onload = function() {
+                            drawImage();
+                            applyEdgeDetection();
+                        };
+                    });
+                    
+                    // Carica immagine utente
+                    imageInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                currentImage.src = event.target.result;
+                                currentImage.onload = function() {
+                                    drawImage();
+                                    applyEdgeDetection();
+                                };
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                    
+                    // Seleziona operatore
+                    sobelBtn.addEventListener('click', function() {
+                        currentOperator = 'sobel';
+                        applyEdgeDetection();
+                    });
+                    
+                    prewittBtn.addEventListener('click', function() {
+                        currentOperator = 'prewitt';
+                        applyEdgeDetection();
+                    });
+                    
+                    cannyBtn.addEventListener('click', function() {
+                        currentOperator = 'canny';
+                        applyEdgeDetection();
+                    });
+                    
+                    // Modifica soglia
+                    thresholdSlider.addEventListener('input', function() {
+                        thresholdValue.textContent = thresholdSlider.value;
+                        applyEdgeDetection();
+                    });
+                    
+                    function drawImage() {
+                        // Adatta l'immagine al canvas mantenendo le proporzioni
+                        const aspectRatio = currentImage.width / currentImage.height;
+                        let drawWidth = originalCanvas.width;
+                        let drawHeight = originalCanvas.height;
+                        
+                        if (aspectRatio > 1) {
+                            drawHeight = drawWidth / aspectRatio;
+                        } else {
+                            drawWidth = drawHeight * aspectRatio;
+                        }
+                        
+                        // Centra l'immagine nel canvas
+                        const x = (originalCanvas.width - drawWidth) / 2;
+                        const y = (originalCanvas.height - drawHeight) / 2;
+                        
+                        originalCtx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+                        originalCtx.drawImage(currentImage, x, y, drawWidth, drawHeight);
+                    }
+                    
+                    function applyEdgeDetection() {
+                        if (!currentImage.src) return;
+                        
+                        // Simula il rilevamento dei bordi (in un'implementazione reale, qui verrebbero usati veri algoritmi)
+                        edgeCtx.clearRect(0, 0, edgeCanvas.width, edgeCanvas.height);
+                        
+                        // Ottieni i dati dell'immagine originale
+                        const imageData = originalCtx.getImageData(0, 0, originalCanvas.width, originalCanvas.height);
+                        
+                        // Simula diversi effetti di rilevamento bordi
+                        const threshold = parseInt(thresholdSlider.value);
+                        
+                        // Applica un filtro semplificato in base all'operatore selezionato
+                        switch(currentOperator) {
+                            case 'sobel':
+                                edgeCtx.filter = `grayscale(100%) contrast(150%) brightness(50%)`;
+                                edgeCtx.drawImage(originalCanvas, 0, 0);
+                                break;
+                            case 'prewitt':
+                                edgeCtx.filter = `grayscale(100%) contrast(120%) brightness(70%)`;
+                                edgeCtx.drawImage(originalCanvas, 0, 0);
+                                break;
+                            case 'canny':
+                                edgeCtx.filter = `grayscale(100%) contrast(200%) brightness(30%)`;
+                                edgeCtx.drawImage(originalCanvas, 0, 0);
+                                break;
+                        }
+                        
+                        // Applica la soglia
+                        const edgeImageData = edgeCtx.getImageData(0, 0, edgeCanvas.width, edgeCanvas.height);
+                        const data = edgeImageData.data;
+                        
+                        for (let i = 0; i < data.length; i += 4) {
+                            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                            const value = avg > threshold ? 255 : 0;
+                            data[i] = data[i + 1] = data[i + 2] = value;
+                        }
+                        
+                        edgeCtx.putImageData(edgeImageData, 0, 0);
+                    }
+                    
+                    // Carica l'immagine di esempio all'avvio
+                    sampleBtn.click();
+                });
+            </script>
+        </div>
+
+        <section id="segmentazione">
+            <h2>Segmentazione delle Immagini</h2>
+            <p>La segmentazione è il processo che divide un'immagine in regioni significative, raggruppando pixel che condividono determinate caratteristiche. Questa tecnica è fondamentale per isolare oggetti di interesse all'interno di un'immagine.</p>
+            
+            <p>Esistono diverse tecniche di segmentazione, tra cui:</p>
+            <ul>
+                <li><strong>Sogliatura (Thresholding):</strong> Divide l'immagine in pixel di primo piano e di sfondo in base a un valore di soglia di intensità.</li>
+                <li><strong>Clustering (come K-means):</strong> Raggruppa i pixel in base alla loro similarità nello spazio dei colori.</li>
+                <li><strong>Segmentazione basata sulle regioni:</strong> Come l'algoritmo di crescita delle regioni (region growing), che parte da pixel "seme" e aggrega pixel vicini con caratteristiche simili.</li>
+                <li><strong>Segmentazione semantica:</strong> Una tecnica avanzata basata sul deep learning che assegna un'etichetta di classe a ogni pixel dell'immagine.</li>
+            </ul>
+        </section>
+
+        <div class="lab-container">
+            <div class="lab-title">Laboratorio 3: Segmentazione delle Immagini</div>
+            <div class="lab-content">
+                <p>Esplora diverse tecniche di segmentazione su un'immagine:</p>
+                
+                <div class="image-upload">
+                    <input type="file" id="segment-image-input" accept="image/*">
+                    <p>o usa un'immagine di esempio:</p>
+                    <button id="use-segment-sample">Usa immagine di esempio</button>
+                </div>
+                
+                <div>
+                    <canvas id="original-segment-canvas" width="400" height="300"></canvas>
+                    <canvas id="segmented-canvas" width="400" height="300"></canvas>
+                </div>
+                
+                <div class="controls">
+                    <button id="threshold-btn">Sogliatura</button>
+                    <button id="kmeans-btn">K-means</button>
+                    <button id="region-btn">Crescita regioni</button>
+                </div>
+                
+                <div class="slider-container">
+                    <label for="segment-slider">Parametro:</label>
+                    <input type="range" id="segment-slider" min="0" max="255" value="128">
+                    <span id="segment-value">128</span>
+                </div>
+            </div>
+            
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const originalCanvas = document.getElementById('original-segment-canvas');
+                    const segmentedCanvas = document.getElementById('segmented-canvas');
+                    const originalCtx = originalCanvas.getContext('2d');
+                    const segmentedCtx = segmentedCanvas.getContext('2d');
+                    const imageInput = document.getElementById('segment-image-input');
+                    const sampleBtn = document.getElementById('use-segment-sample');
+                    const thresholdBtn = document.getElementById('threshold-btn');
+                    const kmeansBtn = document.getElementById('kmeans-btn');
+                    const regionBtn = document.getElementById('region-btn');
+                    const segmentSlider = document.getElementById('segment-slider');
+                    const segmentValue = document.getElementById('segment-value');
+                    
+                    let currentImage = new Image();
+                    let currentTechnique = 'threshold';
+                    
+                    // Carica immagine di esempio
+                    sampleBtn.addEventListener('click', function() {
+                        currentImage.src = "/api/placeholder/400/300";
+                        currentImage.onload = function() {
+                            drawImage();
+                            applySegmentation();
+                        };
+                    });
+                    
+                    // Carica immagine utente
+                    imageInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                currentImage.src = event.target.result;
+                                currentImage.onload = function() {
+                                    drawImage();
+                                    applySegmentation();
+                                };
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                    
+                    // Seleziona tecnica
+                    thresholdBtn.addEventListener('click', function() {
+                        currentTechnique = 'threshold';
+                        applySegmentation();
+                    });
+                    
+                    kmeansBtn.addEventListener('click', function() {
+                        currentTechnique = 'kmeans';
+                        applySegmentation();
+                    });
+                    
+                    regionBtn.addEventListener('click', function() {
+                        currentTechnique = 'region';
+                        applySegmentation();
+                    });
+                    
+                    // Modifica parametro
+                    segmentSlider.addEventListener('input', function() {
+                        segmentValue.textContent = segmentSlider.value;
+                        applySegmentation();
+                    });
+                    
+                    function drawImage() {
+                        // Adatta l'immagine al canvas mantenendo le proporzioni
+                        const aspectRatio = currentImage.width / currentImage.height;
+                        let drawWidth = originalCanvas.width;
+                        let drawHeight = originalCanvas.height;
+                        
+                        if (aspectRatio > 1) {
+                            drawHeight = drawWidth / aspectRatio;
+                        } else {
+                            drawWidth = drawHeight * aspectRatio;
+                        }
+                        
+                        // Centra l'immagine nel canvas
+                        const x = (originalCanvas.width - drawWidth) / 2;
+                        const y = (originalCanvas.height - drawHeight) / 2;
+                        
+                        originalCtx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
+                        originalCtx.drawImage(currentImage, x, y, drawWidth, drawHeight);
+                    }
+                    
+                    function applySegmentation() {
+                        if (!currentImage.src) return;
+                        
+                        segmentedCtx.clearRect(0, 0, segmentedCanvas.width, segmentedCanvas.height);
+                        const value = parseInt(segmentSlider.value);
+                        
+                        // Simula diverse tecniche di segmentazione
+                        switch(currentTechnique) {
+                            case 'threshold':
+                                // Sogliatura semplice
+                                segmentedCtx.drawImage(originalCanvas, 0, 0);
+                                const imageData = segmentedCtx.getImageData(0, 0, segmentedCanvas.width, segmentedCanvas.height);
+                                const data = imageData.data;
+                                
+                                for (let i = 0; i < data.length; i += 4) {
+                                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                                    const color = avg > value ? 255 : 0;
+                                    data[i] = data[i+1] = data[i+2] = color;
+                                }
+                                
+                                segmentedCtx.putImageData(imageData, 0, 0);
+                                break;
+                                
+                            case 'kmeans':
+                                // Simula K-means con quantizzazione colori
+                                segmentedCtx.drawImage(originalCanvas, 0, 0);
+                                const kmeansData = segmentedCtx.getImageData(0, 0, segmentedCanvas.width, segmentedCanvas.height);
+                                const kdata = kmeansData.data;
+                                const clusters = Math.max(2, Math.floor(value / 50));
+                                
+                                for (let i = 0; i < kdata.length; i += 4) {
+                                    // Quantizza i colori in cluster
+                                    const step = 255 / clusters;
+                                    kdata[i] = Math.floor(kdata[i] / step) * step;
+                                    kdata[i+1] = Math.floor(kdata[i+1] / step) * step;
+                                    kdata[i+2] = Math.floor(kdata[i+2] / step) * step;
+                                }
+                                
+                                segmentedCtx.putImageData(kmeansData, 0, 0);
+                                break;
+                                
+                            case 'region':
+                                // Simula crescita regioni con un effetto "macchia"
+                                segmentedCtx.drawImage(originalCanvas, 0, 0);
+                                const regionData = segmentedCtx.getImageData(0, 0, segmentedCanvas.width, segmentedCanvas.height);
+                                const rdata = regionData.data;
+                                const tolerance = value / 2;
+                                
+                                // Applica un effetto che simula la crescita delle regioni
+                                for (let y = 1; y < segmentedCanvas.height - 1; y++) {
+                                    for (let x = 1; x < segmentedCanvas.width - 1; x++) {
+                                        const i = (y * segmentedCanvas.width + x) * 4;
+                                        const i1 = ((y-1) * segmentedCanvas.width + x) * 4; // pixel sopra
+                                        
+                                        const diff = Math.abs(rdata[i] - rdata[i1]) + 
+                                                    Math.abs(rdata[i+1] - rdata[i1+1]) +
