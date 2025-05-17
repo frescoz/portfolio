@@ -3,618 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Computer Vision: Storia, Tecniche e Importanza</title>
+    <title>Computer Vision</title>
     <style>
+        /* === Stili Globali === */
+        html {
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        header {
-            text-align: center;
-            padding: 30px 0;
-            background-color: #3498db;
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-        h1 {
             margin: 0;
-            font-size: 2.5em;
+            padding: 0;
+            background-color: #000;
+            color: #f0fff0;
+            font-family: Helvetica, sans-serif;
+            padding-top: 70px;
         }
-        h2 {
-            color: #2980b9;
-            border-bottom: 2px solid #2980b9;
-            padding-bottom: 10px;
-            margin-top: 40px;
+
+        /* === Header === */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000;
+            z-index: 1000;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        h3 {
-            color: #2c3e50;
-            margin-top: 25px;
+        .site-header.with-border {
+            border-bottom: 1px solid #fff;
         }
-        .lab-container {
-            background-color: #e8f4f8;
-            border-left: 5px solid #3498db;
-            padding: 20px;
-            margin: 30px 0;
-            border-radius: 5px;
-        }
-        .lab-title {
+        .site-header h1 {
+            font-size: 1.8em;
             font-weight: bold;
-            color: #2980b9;
-            font-size: 1.2em;
+            color: #7cfc00;
+            margin: 0;
+            display: none;
+        }
+        #change-image-controls {
+            display: none;
+        }
+        #change-image-button {
+            color: #fff;
+            font-size: 0.9em;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 8px 12px;
+            background-color: transparent;
+            border: 1px solid #fff;
+            border-radius: 4px;
+        }
+        #change-image-button:hover {
+            background-color: #333;
+        }
+
+        #initial-upload-prompt {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #7cfc00;
+            text-align: center;
+            cursor: pointer;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 900;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        #main-content-wrapper {
+            display: none;
+        }
+
+        .content-block {
+            max-width: 960px;
+            margin-left: 20px;
+            margin-right: 20px;
+            padding-top: 20px;
+            padding-bottom: 0;
+            padding-left: 0;
+            padding-right: 20px;
+        }
+        #uploaded-image-section {}
+        .technique-entry {
+            padding-bottom: 20px;
+        }
+        .content-block h2 {
+            font-size: 1.8em;
+            color: #7cfc00;
+            font-weight: bold;
+            margin-top: 0;
             margin-bottom: 15px;
         }
-        .lab-content {
-            margin-bottom: 20px;
+        .content-block p {
+            margin-bottom: 15px;
         }
-        .image-upload {
-            margin: 15px 0;
-        }
-        canvas {
-            border: 1px solid #ccc;
-            max-width: 100%;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 5px 0;
-            font-size: 0.9em;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .timeline {
-            position: relative;
-            margin: 30px 0;
-            padding-left: 50px;
-        }
-        .timeline-item {
-            position: relative;
-            margin-bottom: 25px;
-        }
-        .timeline-item:before {
-            content: "";
-            position: absolute;
-            left: -40px;
-            top: 5px;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background-color: #3498db;
-        }
-        .timeline:before {
-            content: "";
-            position: absolute;
-            left: 5px;
-            top: 0;
-            height: 100%;
-            width: 2px;
-            background-color: #ccc;
-        }
-        .timeline-year {
-            font-weight: bold;
-            color: #3498db;
-            margin-right: 10px;
-        }
-        .conclusion {
-            background-color: #f0f7fb;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 40px;
-            border-left: 5px solid #2c3e50;
-        }
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #ccc;
-            color: #7f8c8d;
-        }
-        img {
+        #uploaded-image-display, .modified-image-display {
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 20px auto;
+            margin-bottom: 8pt;
         }
-        .controls {
+        .image-sub-text {
+            font-size: 8pt;
+            color: #a9a9a9;
+            text-align: left;
+            margin-bottom: 15px; /* Questo margine influenzerà l'allineamento con flex-end */
+        }
+
+        /* === Stili per la Dimostrazione Sobel === */
+        .sobel-demonstration .image-comparison-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            /* gap: 10px; /* Spazio tra gli elementi ridotto ulteriormente */
+            margin-bottom: 15px;
+            align-items: flex-end; /* Allinea gli elementi flex (immagini e controlli slider) alla loro base */
         }
-        .slider-container {
-            margin: 15px 0;
+        .sobel-demonstration .image-container {
+            flex: 1;
+            min-width: 0;
+            margin-right: 10px; /* Spazio tra contenitori immagine e controlli slider */
         }
-        label {
-            display: inline-block;
-            width: 150px;
+        .sobel-demonstration .image-container:last-of-type { /* Rimuove margine destro per l'ultimo contenitore immagine prima dello slider */
+             margin-right: 0;
+        }
+
+        .sobel-demonstration canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #444;
+            margin-bottom: 8pt;
+        }
+        
+        .sobel-controls-vertical {
+            display: flex;
+            flex-direction: column; /* Slider sopra, etichetta sotto */
+            align-items: center;
+            margin-left: 10px;    /* Avvicina lo slider all'immagine Sobel */
+            width: auto; /* Lascia che la larghezza sia definita dal contenuto (slider e etichetta) */
+            min-width: 40px; /* Per assicurare un po' di spazio per l'etichetta */
+            /* La parte inferiore di questo blocco si allineerà con la parte inferiore
+               dei p.image-sub-text grazie a align-items: flex-end sul genitore */
+        }
+        .sobel-controls-vertical label {
+            font-size: 0.9em;
+            font-weight: bold; /* Richiesto */
+            color: #fff;       /* Richiesto */
+            white-space: nowrap;
+            /* margin-top: 8px; Spazio dallo slider sopra, gestito da margin-bottom dello slider */
+        }
+
+        #sobel-threshold-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 150px;  /* LUNGHEZZA dello slider verticale */
+            height: 22px;  /* LARGHEZZA/spessore dell'area cliccabile (include spazio per thumb) */
+            background: transparent;
+            cursor: pointer;
+            margin: 0;
+            transform-origin: center center;
+            transform: rotate(-90deg);
+            margin-bottom: 25px; /* Spazio tra slider ruotato (ora la sua "base" è a destra) e l'etichetta sotto */
+                                /* Questo valore potrebbe necessitare di aggiustamenti per l'allineamento visivo */
+        }
+
+        #sobel-threshold-slider::-webkit-slider-runnable-track {
+            width: 100%; /* Lunghezza della track (150px) */
+            height: 8px; /* Spessore della track */
+            background: #fff;
+            border-radius: 4px;
+            border: none; /* Rimosso bordo */
+        }
+        #sobel-threshold-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #7cfc00;
+            border-radius: 0; /* Quadrato */
+            border: none; /* Rimosso bordo */
+            margin-top: -6px; /* (8px track / 2) - (20px thumb / 2) = 4px - 10px = -6px */
+        }
+
+        #sobel-threshold-slider::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: #fff;
+            border-radius: 4px;
+            border: none; /* Rimosso bordo */
+        }
+        #sobel-threshold-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #7cfc00;
+            border-radius: 0; /* Quadrato */
+            border: none; /* Rimosso bordo */
+        }
+
+        .full-bleed-separator {
+            width: 100%;
+            height: 1px;
+            background-color: #fff;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        #credits-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-align: right;
+            line-height: 1.3;
+            z-index: 1000;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>La Computer Vision</h1>
-        <p>Storia, Tecniche e Importanza nel Mondo Moderno</p>
+
+    <header class="site-header">
+        <h1>Computer Vision</h1>
+        <div id="change-image-controls">
+            <button id="change-image-button">CAMBIA IMMAGINE</button>
+            <input type="file" id="secondary-file-input" class="hidden-file-input" accept="image/*">
+        </div>
     </header>
 
-    <main>
-        <section id="introduzione">
-            <h2>Introduzione alla Computer Vision</h2>
-            <p>La Computer Vision è una disciplina dell'intelligenza artificiale che si propone di insegnare ai computer a "vedere" e interpretare il mondo visivo come fanno gli esseri umani. Questa tecnologia permette alle macchine di identificare, elaborare e analizzare immagini e video, estraendo informazioni significative da essi.</p>
-            
-            <p>Oggi la Computer Vision è alla base di numerose applicazioni che utilizziamo quotidianamente: dai sistemi di riconoscimento facciale nei nostri smartphone, ai veicoli a guida autonoma, fino ai sistemi di sorveglianza intelligente e alle applicazioni mediche per la diagnosi delle malattie.</p>
-        </section>
+    <div id="initial-upload-prompt">Upload image</div>
+    <input type="file" id="primary-file-input" class="hidden-file-input" accept="image/*">
 
-        <section id="storia">
-            <h2>Storia della Computer Vision</h2>
-            <p>La storia della Computer Vision è caratterizzata da un'evoluzione continua, passando da semplici algoritmi per l'elaborazione delle immagini a sofisticati sistemi di apprendimento automatico. Ecco le tappe fondamentali di questo percorso:</p>
-
-            <div class="timeline">
-                <div class="timeline-item">
-                    <span class="timeline-year">1960s:</span>
-                    <p>I primi tentativi di Computer Vision nascono nei laboratori di intelligenza artificiale. Il progetto "Summer Vision" al MIT (1966) segna l'inizio ufficiale di questa disciplina, con l'ambizioso obiettivo di descrivere ciò che era presente in un'immagine.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <span class="timeline-year">1970s:</span>
-                    <p>David Marr sviluppa un framework teorico per la visione computazionale, proponendo che la visione sia un processo di elaborazione dell'informazione che passa per diverse rappresentazioni. Nel frattempo, vengono sviluppati i primi algoritmi per il riconoscimento di bordi e la segmentazione delle immagini.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <span class="timeline-year">1980s:</span>
-                    <p>Emerge il concetto di "visione attiva" e si sviluppano algoritmi per l'estrazione di caratteristiche, come SIFT (Scale-Invariant Feature Transform). Si lavora sui sistemi di stereoscopia per la percezione della profondità e si introducono i primi tentativi di riconoscimento di oggetti basati su modelli.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <span class="timeline-year">1990s:</span>
-                    <p>Si sviluppano metodi statistici per il riconoscimento dei pattern. Il rilevamento di volti diventa un'area di ricerca importante e vengono create le prime banche dati di immagini per l'addestramento e i test, come MNIST per il riconoscimento di caratteri scritti a mano.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <span class="timeline-year">2000s:</span>
-                    <p>L'algoritmo Viola-Jones rivoluziona il rilevamento di oggetti in tempo reale. Si diffondono le Support Vector Machines (SVM) e altri classificatori statistici. La Computer Vision viene integrata in sistemi commerciali come le fotocamere digitali con rilevamento automatico dei volti.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <span class="timeline-year">2010 - Presente:</span>
-                    <p>L'avvento delle reti neurali convoluzionali (CNN) e del deep learning segna una svolta nella Computer Vision. Nel 2012, AlexNet vince la competizione ImageNet riducendo drasticamente il tasso di errore nel riconoscimento di oggetti. Da allora, si sono sviluppati modelli sempre più sofisticati come YOLO, Mask R-CNN e le architetture Transformer, che hanno portato a progressi impressionanti in compiti come la segmentazione semantica, il rilevamento di oggetti e la comprensione di scene.</p>
-                </div>
-            </div>
-        </section>
-
-        <div class="lab-container">
-            <div class="lab-title">Laboratorio 1: Evoluzione della Computer Vision</div>
-            <div class="lab-content">
-                <p>Questo semplice dimostratore ti permette di visualizzare come sono migliorate le capacità di riconoscimento delle immagini nel corso degli anni.</p>
-                
-                <select id="technique-select">
-                    <option value="original">Immagine originale</option>
-                    <option value="early">Tecniche degli anni '70-'80</option>
-                    <option value="hog">Histogram of Oriented Gradients (anni '90-2000)</option>
-                    <option value="cnn">Reti neurali convoluzionali (2010+)</option>
-                </select>
-                
-                <div>
-                    <img id="vision-example" src="/api/placeholder/400/300" alt="Esempio di Computer Vision">
-                </div>
-                
-                <button id="change-example">Cambia immagine</button>
-            </div>
-            
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const select = document.getElementById('technique-select');
-                    const image = document.getElementById('vision-example');
-                    const changeBtn = document.getElementById('change-example');
-                    
-                    let currentImageIndex = 0;
-                    const imageSources = [
-                        "/api/placeholder/400/300", 
-                        "/api/placeholder/400/300", 
-                        "/api/placeholder/400/300"
-                    ];
-                    
-                    select.addEventListener('change', function() {
-                        // Simulazione di diversi stili di elaborazione
-                        switch(select.value) {
-                            case 'original':
-                                image.style.filter = "none";
-                                break;
-                            case 'early':
-                                image.style.filter = "grayscale(100%) contrast(120%)";
-                                break;
-                            case 'hog':
-                                image.style.filter = "grayscale(100%) contrast(150%) brightness(120%)";
-                                break;
-                            case 'cnn':
-                                image.style.filter = "saturate(120%)";
-                                break;
-                        }
-                    });
-                    
-                    changeBtn.addEventListener('click', function() {
-                        currentImageIndex = (currentImageIndex + 1) % imageSources.length;
-                        image.src = imageSources[currentImageIndex];
-                        // Riapplica il filtro corrente
-                        select.dispatchEvent(new Event('change'));
-                    });
-                });
-            </script>
+    <div id="main-content-wrapper">
+        <div class="content-block" id="uploaded-image-section">
+            <img id="uploaded-image-display" src="#" alt="Immagine caricata">
+            <p class="image-sub-text">Immagine caricata dall'utente.</p>
         </div>
 
-        <section id="fondamenti">
-            <h2>Fondamenti della Computer Vision</h2>
-            
-            <h3>Elaborazione delle Immagini Digitali</h3>
-            <p>Prima di poter "comprendere" un'immagine, un sistema di Computer Vision deve elaborarla. L'elaborazione delle immagini digitali comprende una serie di operazioni di base che trasformano un'immagine in ingresso per migliorarne alcune caratteristiche o estrarre informazioni rilevanti:</p>
-            <ul>
-                <li><strong>Conversione in scala di grigi:</strong> Semplifica l'elaborazione riducendo l'immagine a un solo canale di intensità.</li>
-                <li><strong>Filtri di riduzione del rumore:</strong> Come il filtro gaussiano o il filtro mediano, che attenuano il rumore preservando i dettagli importanti.</li>
-                <li><strong>Regolazione del contrasto e della luminosità:</strong> Per evidenziare le caratteristiche rilevanti dell'immagine.</li>
-                <li><strong>Operazioni morfologiche:</strong> Come l'erosione e la dilatazione, che modificano la forma degli oggetti nell'immagine.</li>
-            </ul>
-        </section>
+        <div class="full-bleed-separator"></div>
 
-        <section id="rilevamento-bordi">
-            <h2>Rilevamento dei Bordi</h2>
-            <p>Il rilevamento dei bordi è una delle tecniche fondamentali nella Computer Vision. I bordi rappresentano i confini tra diverse regioni di un'immagine e contengono informazioni cruciali sulla forma degli oggetti. Identificare correttamente i bordi è spesso il primo passo per comprendere il contenuto di un'immagine.</p>
+        <div class="content-block technique-entry">
+            <h2>Primi Tentativi e Riconoscimento di Forme (Anni '60-'70)</h2>
+            <p>I primi approcci alla computer vision si concentravano sul riconoscimento di forme geometriche semplici e sull'analisi di immagini binarie. Tecniche come l'estrazione dei bordi (ad esempio con l'algoritmo di Sobel) e la segmentazione basata su soglie erano fondamentali.</p>
             
-            <p>Esistono diversi operatori per il rilevamento dei bordi, tra cui:</p>
-            <ul>
-                <li><strong>Operatore di Sobel:</strong> Calcola il gradiente dell'intensità dell'immagine per rilevare i bordi orizzontali e verticali.</li>
-                <li><strong>Operatore di Prewitt:</strong> Simile a Sobel, ma utilizza maschere di convoluzione leggermente diverse.</li>
-                <li><strong>Operatore di Canny:</strong> Un algoritmo più sofisticato che include più fasi, come la riduzione del rumore, il calcolo del gradiente, la soppressione dei non-massimi e la sogliatura con isteresi.</li>
-            </ul>
-        </section>
-
-        <div class="lab-container">
-            <div class="lab-title">Laboratorio 2: Rilevamento dei Bordi</div>
-            <div class="lab-content">
-                <p>Carica un'immagine e osserva come funzionano i diversi operatori di rilevamento dei bordi:</p>
-                
-                <div class="image-upload">
-                    <input type="file" id="edge-image-input" accept="image/*">
-                    <p>o usa un'immagine di esempio:</p>
-                    <button id="use-sample-image">Usa immagine di esempio</button>
-                </div>
-                
-                <div>
-                    <canvas id="original-canvas" width="400" height="300"></canvas>
-                    <canvas id="edge-canvas" width="400" height="300"></canvas>
-                </div>
-                
-                <div class="controls">
-                    <button id="sobel-btn">Operatore di Sobel</button>
-                    <button id="prewitt-btn">Operatore di Prewitt</button>
-                    <button id="canny-btn">Operatore di Canny</button>
-                </div>
-                
-                <div class="slider-container">
-                    <label for="threshold-slider">Soglia:</label>
-                    <input type="range" id="threshold-slider" min="0" max="255" value="100">
-                    <span id="threshold-value">100</span>
+            <div class="sobel-demonstration">
+                <div class="image-comparison-container">
+                    <div class="image-container" id="grayscale-image-wrapper">
+                        <canvas id="grayscale-canvas"></canvas>
+                        <p class="image-sub-text">Immagine in Scala di Grigi</p>
+                    </div>
+                    <div class="image-container" id="sobel-image-wrapper">
+                        <canvas id="sobel-canvas"></canvas>
+                        <p class="image-sub-text">Rilevamento Bordi (Sobel)</p>
+                    </div>
+                    <div class="sobel-controls-vertical">
+                        <input type="range" id="sobel-threshold-slider" min="0" max="255" value="100"> <label for="sobel-threshold-slider">K: <span id="threshold-value-display">100</span></label>
+                    </div>
                 </div>
             </div>
-            
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const originalCanvas = document.getElementById('original-canvas');
-                    const edgeCanvas = document.getElementById('edge-canvas');
-                    const originalCtx = originalCanvas.getContext('2d');
-                    const edgeCtx = edgeCanvas.getContext('2d');
-                    const imageInput = document.getElementById('edge-image-input');
-                    const sampleBtn = document.getElementById('use-sample-image');
-                    const sobelBtn = document.getElementById('sobel-btn');
-                    const prewittBtn = document.getElementById('prewitt-btn');
-                    const cannyBtn = document.getElementById('canny-btn');
-                    const thresholdSlider = document.getElementById('threshold-slider');
-                    const thresholdValue = document.getElementById('threshold-value');
-                    
-                    let currentImage = new Image();
-                    let currentOperator = 'sobel';
-                    
-                    // Carica immagine di esempio
-                    sampleBtn.addEventListener('click', function() {
-                        currentImage.src = "/api/placeholder/400/300";
-                        currentImage.onload = function() {
-                            drawImage();
-                            applyEdgeDetection();
-                        };
-                    });
-                    
-                    // Carica immagine utente
-                    imageInput.addEventListener('change', function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(event) {
-                                currentImage.src = event.target.result;
-                                currentImage.onload = function() {
-                                    drawImage();
-                                    applyEdgeDetection();
-                                };
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                    
-                    // Seleziona operatore
-                    sobelBtn.addEventListener('click', function() {
-                        currentOperator = 'sobel';
-                        applyEdgeDetection();
-                    });
-                    
-                    prewittBtn.addEventListener('click', function() {
-                        currentOperator = 'prewitt';
-                        applyEdgeDetection();
-                    });
-                    
-                    cannyBtn.addEventListener('click', function() {
-                        currentOperator = 'canny';
-                        applyEdgeDetection();
-                    });
-                    
-                    // Modifica soglia
-                    thresholdSlider.addEventListener('input', function() {
-                        thresholdValue.textContent = thresholdSlider.value;
-                        applyEdgeDetection();
-                    });
-                    
-                    function drawImage() {
-                        // Adatta l'immagine al canvas mantenendo le proporzioni
-                        const aspectRatio = currentImage.width / currentImage.height;
-                        let drawWidth = originalCanvas.width;
-                        let drawHeight = originalCanvas.height;
-                        
-                        if (aspectRatio > 1) {
-                            drawHeight = drawWidth / aspectRatio;
-                        } else {
-                            drawWidth = drawHeight * aspectRatio;
-                        }
-                        
-                        // Centra l'immagine nel canvas
-                        const x = (originalCanvas.width - drawWidth) / 2;
-                        const y = (originalCanvas.height - drawHeight) / 2;
-                        
-                        originalCtx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
-                        originalCtx.drawImage(currentImage, x, y, drawWidth, drawHeight);
-                    }
-                    
-                    function applyEdgeDetection() {
-                        if (!currentImage.src) return;
-                        
-                        // Simula il rilevamento dei bordi (in un'implementazione reale, qui verrebbero usati veri algoritmi)
-                        edgeCtx.clearRect(0, 0, edgeCanvas.width, edgeCanvas.height);
-                        
-                        // Ottieni i dati dell'immagine originale
-                        const imageData = originalCtx.getImageData(0, 0, originalCanvas.width, originalCanvas.height);
-                        
-                        // Simula diversi effetti di rilevamento bordi
-                        const threshold = parseInt(thresholdSlider.value);
-                        
-                        // Applica un filtro semplificato in base all'operatore selezionato
-                        switch(currentOperator) {
-                            case 'sobel':
-                                edgeCtx.filter = `grayscale(100%) contrast(150%) brightness(50%)`;
-                                edgeCtx.drawImage(originalCanvas, 0, 0);
-                                break;
-                            case 'prewitt':
-                                edgeCtx.filter = `grayscale(100%) contrast(120%) brightness(70%)`;
-                                edgeCtx.drawImage(originalCanvas, 0, 0);
-                                break;
-                            case 'canny':
-                                edgeCtx.filter = `grayscale(100%) contrast(200%) brightness(30%)`;
-                                edgeCtx.drawImage(originalCanvas, 0, 0);
-                                break;
-                        }
-                        
-                        // Applica la soglia
-                        const edgeImageData = edgeCtx.getImageData(0, 0, edgeCanvas.width, edgeCanvas.height);
-                        const data = edgeImageData.data;
-                        
-                        for (let i = 0; i < data.length; i += 4) {
-                            const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                            const value = avg > threshold ? 255 : 0;
-                            data[i] = data[i + 1] = data[i + 2] = value;
-                        }
-                        
-                        edgeCtx.putImageData(edgeImageData, 0, 0);
-                    }
-                    
-                    // Carica l'immagine di esempio all'avvio
-                    sampleBtn.click();
-                });
-            </script>
         </div>
 
-        <section id="segmentazione">
-            <h2>Segmentazione delle Immagini</h2>
-            <p>La segmentazione è il processo che divide un'immagine in regioni significative, raggruppando pixel che condividono determinate caratteristiche. Questa tecnica è fondamentale per isolare oggetti di interesse all'interno di un'immagine.</p>
-            
-            <p>Esistono diverse tecniche di segmentazione, tra cui:</p>
-            <ul>
-                <li><strong>Sogliatura (Thresholding):</strong> Divide l'immagine in pixel di primo piano e di sfondo in base a un valore di soglia di intensità.</li>
-                <li><strong>Clustering (come K-means):</strong> Raggruppa i pixel in base alla loro similarità nello spazio dei colori.</li>
-                <li><strong>Segmentazione basata sulle regioni:</strong> Come l'algoritmo di crescita delle regioni (region growing), che parte da pixel "seme" e aggrega pixel vicini con caratteristiche simili.</li>
-                <li><strong>Segmentazione semantica:</strong> Una tecnica avanzata basata sul deep learning che assegna un'etichetta di classe a ogni pixel dell'immagine.</li>
-            </ul>
-        </section>
+        <div class="full-bleed-separator"></div>
 
-        <div class="lab-container">
-            <div class="lab-title">Laboratorio 3: Segmentazione delle Immagini</div>
-            <div class="lab-content">
-                <p>Esplora diverse tecniche di segmentazione su un'immagine:</p>
-                
-                <div class="image-upload">
-                    <input type="file" id="segment-image-input" accept="image/*">
-                    <p>o usa un'immagine di esempio:</p>
-                    <button id="use-segment-sample">Usa immagine di esempio</button>
-                </div>
-                
-                <div>
-                    <canvas id="original-segment-canvas" width="400" height="300"></canvas>
-                    <canvas id="segmented-canvas" width="400" height="300"></canvas>
-                </div>
-                
-                <div class="controls">
-                    <button id="threshold-btn">Sogliatura</button>
-                    <button id="kmeans-btn">K-means</button>
-                    <button id="region-btn">Crescita regioni</button>
-                </div>
-                
-                <div class="slider-container">
-                    <label for="segment-slider">Parametro:</label>
-                    <input type="range" id="segment-slider" min="0" max="255" value="128">
-                    <span id="segment-value">128</span>
-                </div>
-            </div>
+        <div class="content-block technique-entry">
+            <h2>Visione 3D e Modellazione (Anni '80)</h2>
+            <p>Negli anni '80, la ricerca si spostò verso la comprensione della geometria tridimensionale a partire da immagini 2D. Tecniche come la fotogrammetria e l'analisi del flusso ottico iniziarono a svilupparsi.</p>
+            <img class="modified-image-display" src="placeholder_3d.png" alt="Ricostruzione 3D approssimata">
+            <p class="image-sub-text">Esempio di ricostruzione 3D approssimata.</p>
+        </div>
+
+        <div class="full-bleed-separator"></div>
+
+        <div class="content-block technique-entry">
+            <h2>Riconoscimento di Oggetti e Machine Learning (Anni '90-'2000)</h2>
+            <p>L'avvento del machine learning ha rivoluzionato la computer vision, portando a progressi significativi nel riconoscimento di oggetti, nell'analisi di scene e nel tracciamento video. Algoritmi come SVM e le prime reti neurali hanno giocato un ruolo cruciale.</p>
+            <img class="modified-image-display" src="placeholder_oggetti.png" alt="Oggetti rilevati">
+            <p class="image-sub-text">Esempio di immagine con oggetti rilevati.</p>
+        </div>
+
+        <div class="full-bleed-separator"></div>
+
+        <div class="content-block technique-entry">
+            <h2>Deep Learning e Intelligenza Artificiale (Anni 2010-oggi)</h2>
+            <p>L'esplosione del deep learning, con architetture come le CNN (Convolutional Neural Networks), ha portato a prestazioni senza precedenti in molti compiti di computer vision, come il riconoscimento facciale, la guida autonoma e l'analisi medica.</p>
+            <img class="modified-image-display" src="placeholder_deeplearning.png" alt="Analisi avanzata">
+            <p class="image-sub-text">Esempio di analisi avanzata con deep learning.</p>
+        </div>
+    </div>
+
+    <div id="credits-info">
+        ISIA U<br>
+        Elia Miodini<br>
+        Aiudi Francesco
+    </div>
+
+    <script>
+        // Elementi DOM
+        const siteHeader = document.querySelector('.site-header');
+        const headerTitle = siteHeader.querySelector('h1');
+        const changeImageControls = document.getElementById('change-image-controls');
+        const changeImageButton = document.getElementById('change-image-button');
+        const secondaryFileInput = document.getElementById('secondary-file-input');
+
+        const initialUploadPrompt = document.getElementById('initial-upload-prompt');
+        const primaryFileInput = document.getElementById('primary-file-input');
+
+        const mainContentWrapper = document.getElementById('main-content-wrapper');
+        const uploadedImageDisplay = document.getElementById('uploaded-image-display');
+        const modifiedImageDisplays = document.querySelectorAll('.modified-image-display');
+
+
+        const creditsInfo = document.getElementById('credits-info');
+
+        const placeholderImages = [ 
+            'placeholder_3d.png',
+            'placeholder_oggetti.png',
+            'placeholder_deeplearning.png'
+        ];
+
+        const grayscaleCanvas = document.getElementById('grayscale-canvas');
+        const sobelCanvas = document.getElementById('sobel-canvas');
+        const sobelThresholdSlider = document.getElementById('sobel-threshold-slider');
+        const thresholdValueDisplay = document.getElementById('threshold-value-display');
+
+        let grayscaleImageData = null; 
+        let gradientMagnitudeData = null; 
+
+
+        function showInitialState() {
+            headerTitle.style.display = 'none';
+            siteHeader.classList.remove('with-border');
+            changeImageControls.style.display = 'none';
+            initialUploadPrompt.style.display = 'block';
+            mainContentWrapper.style.display = 'none';
+            creditsInfo.style.display = 'none';
+
+            modifiedImageDisplays.forEach((img, index) => {
+                if (placeholderImages[index]) {
+                    img.src = placeholderImages[index];
+                }
+            });
+            if (uploadedImageDisplay.getAttribute('src') !== '#') {
+                 uploadedImageDisplay.src = '#';
+            }
+            const canvases = [grayscaleCanvas, sobelCanvas];
+            canvases.forEach(canvas => {
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    const parentWidth = canvas.parentElement.offsetWidth > 20 ? canvas.parentElement.offsetWidth - 10 : 180; // Stima larghezza disponibile
+                    const placeholderWidth = Math.max(50, parentWidth); // Evita larghezza 0 o negativa
+                    const placeholderHeight = placeholderWidth * 0.75;
+                    canvas.width = placeholderWidth; 
+                    canvas.height = placeholderHeight;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#222'; 
+                    ctx.fillRect(0,0,canvas.width, canvas.height);
+                    ctx.fillStyle = '#555'; 
+                    ctx.textAlign='center'; 
+                    ctx.font = '12px Helvetica';
+                    ctx.fillText('N/D', canvas.width/2, canvas.height/2); // N/D più corto
+                }
+            });
+            if(thresholdValueDisplay) thresholdValueDisplay.textContent = sobelThresholdSlider.value;
+        }
+
+        function showContentState(imageSrc) {
+            uploadedImageDisplay.src = imageSrc; 
+            modifiedImageDisplays.forEach(img => img.src = imageSrc);
+
+            headerTitle.style.display = 'block';
+            siteHeader.classList.add('with-border');
+            changeImageControls.style.display = 'flex';
+            initialUploadPrompt.style.display = 'none';
+            mainContentWrapper.style.display = 'block';
+            creditsInfo.style.display = 'block';
+
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                processImageForSobel(tempImg); 
+                applyThresholdAndDrawSobel(parseInt(sobelThresholdSlider.value));
+            };
+            tempImg.src = imageSrc;
+        }
+
+        function convertToGrayscale(sourceCanvas) {
+            const ctx = sourceCanvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                data[i] = data[i + 1] = data[i + 2] = gray;
+            }
+            return imageData;
+        }
+
+        function applySobel(gsImageData) {
+            const width = gsImageData.width;
+            const height = gsImageData.height;
+            const data = gsImageData.data;
             
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const originalCanvas = document.getElementById('original-segment-canvas');
-                    const segmentedCanvas = document.getElementById('segmented-canvas');
-                    const originalCtx = originalCanvas.getContext('2d');
-                    const segmentedCtx = segmentedCanvas.getContext('2d');
-                    const imageInput = document.getElementById('segment-image-input');
-                    const sampleBtn = document.getElementById('use-segment-sample');
-                    const thresholdBtn = document.getElementById('threshold-btn');
-                    const kmeansBtn = document.getElementById('kmeans-btn');
-                    const regionBtn = document.getElementById('region-btn');
-                    const segmentSlider = document.getElementById('segment-slider');
-                    const segmentValue = document.getElementById('segment-value');
-                    
-                    let currentImage = new Image();
-                    let currentTechnique = 'threshold';
-                    
-                    // Carica immagine di esempio
-                    sampleBtn.addEventListener('click', function() {
-                        currentImage.src = "/api/placeholder/400/300";
-                        currentImage.onload = function() {
-                            drawImage();
-                            applySegmentation();
-                        };
-                    });
-                    
-                    // Carica immagine utente
-                    imageInput.addEventListener('change', function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(event) {
-                                currentImage.src = event.target.result;
-                                currentImage.onload = function() {
-                                    drawImage();
-                                    applySegmentation();
-                                };
-                            };
-                            reader.readAsDataURL(file);
+            gradientMagnitudeData = new Float32Array(width * height);
+            let maxGradient = 0;
+
+            const Gx = [[-1, 0, 1],[-2, 0, 2],[-1, 0, 1]];
+            const Gy = [[-1, -2, -1],[ 0,  0,  0],[ 1,  2,  1]];
+
+            for (let y = 1; y < height - 1; y++) {
+                for (let x = 1; x < width - 1; x++) {
+                    let sumGx = 0;
+                    let sumGy = 0;
+                    for (let ky = -1; ky <= 1; ky++) {
+                        for (let kx = -1; kx <= 1; kx++) {
+                            const pixel_idx = ((y + ky) * width + (x + kx)) * 4;
+                            const gray_val = data[pixel_idx];
+                            sumGx += gray_val * Gx[ky + 1][kx + 1];
+                            sumGy += gray_val * Gy[ky + 1][kx + 1];
                         }
-                    });
-                    
-                    // Seleziona tecnica
-                    thresholdBtn.addEventListener('click', function() {
-                        currentTechnique = 'threshold';
-                        applySegmentation();
-                    });
-                    
-                    kmeansBtn.addEventListener('click', function() {
-                        currentTechnique = 'kmeans';
-                        applySegmentation();
-                    });
-                    
-                    regionBtn.addEventListener('click', function() {
-                        currentTechnique = 'region';
-                        applySegmentation();
-                    });
-                    
-                    // Modifica parametro
-                    segmentSlider.addEventListener('input', function() {
-                        segmentValue.textContent = segmentSlider.value;
-                        applySegmentation();
-                    });
-                    
-                    function drawImage() {
-                        // Adatta l'immagine al canvas mantenendo le proporzioni
-                        const aspectRatio = currentImage.width / currentImage.height;
-                        let drawWidth = originalCanvas.width;
-                        let drawHeight = originalCanvas.height;
-                        
-                        if (aspectRatio > 1) {
-                            drawHeight = drawWidth / aspectRatio;
-                        } else {
-                            drawWidth = drawHeight * aspectRatio;
-                        }
-                        
-                        // Centra l'immagine nel canvas
-                        const x = (originalCanvas.width - drawWidth) / 2;
-                        const y = (originalCanvas.height - drawHeight) / 2;
-                        
-                        originalCtx.clearRect(0, 0, originalCanvas.width, originalCanvas.height);
-                        originalCtx.drawImage(currentImage, x, y, drawWidth, drawHeight);
                     }
-                    
-                    function applySegmentation() {
-                        if (!currentImage.src) return;
-                        
-                        segmentedCtx.clearRect(0, 0, segmentedCanvas.width, segmentedCanvas.height);
-                        const value = parseInt(segmentSlider.value);
-                        
-                        // Simula diverse tecniche di segmentazione
-                        switch(currentTechnique) {
-                            case 'threshold':
-                                // Sogliatura semplice
-                                segmentedCtx.drawImage(originalCanvas, 0, 0);
-                                const imageData = segmentedCtx.getImageData(0, 0, segmentedCanvas.width, segmentedCanvas.height);
-                                const data = imageData.data;
-                                
-                                for (let i = 0; i < data.length; i += 4) {
-                                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                                    const color = avg > value ? 255 : 0;
-                                    data[i] = data[i+1] = data[i+2] = color;
-                                }
-                                
-                                segmentedCtx.putImageData(imageData, 0, 0);
-                                break;
-                                
-                            case 'kmeans':
-                                // Simula K-means con quantizzazione colori
-                                segmentedCtx.drawImage(originalCanvas, 0, 0);
-                                const kmeansData = segmentedCtx.getImageData(0, 0, segmentedCanvas.width, segmentedCanvas.height);
-                                const kdata = kmeansData.data;
-                                const clusters = Math.max(2, Math.floor(value / 50));
-                                
-                                for (let i = 0; i < kdata.length; i += 4) {
-                                    // Quantizza i colori in cluster
-                                    const step = 255 / clusters;
-                                    kdata[i] = Math.floor(kdata[i] / step) * step;
-                                    kdata[i+1] = Math.floor(kdata[i+1] / step) * step;
-                                    kdata[i+2] = Math.floor(kdata[i+2] / step) * step;
-                                }
-                                
-                                segmentedCtx.putImageData(kmeansData, 0, 0);
-                                break;
-                                
-                            case 'region':
-                                // Simula crescita regioni con un effetto "macchia"
-                                segmentedCtx.drawImage(originalCanvas, 0, 0);
-                                const regionData = segmentedCtx.getImageData(0, 0, segmentedCanvas.width, segmentedCanvas.height);
-                                const rdata = regionData.data;
-                                const tolerance = value / 2;
-                                
-                                // Applica un effetto che simula la crescita delle regioni
-                                for (let y = 1; y < segmentedCanvas.height - 1; y++) {
-                                    for (let x = 1; x < segmentedCanvas.width - 1; x++) {
-                                        const i = (y * segmentedCanvas.width + x) * 4;
-                                        const i1 = ((y-1) * segmentedCanvas.width + x) * 4; // pixel sopra
-                                        
-                                        const diff = Math.abs(rdata[i] - rdata[i1]) + 
-                                                    Math.abs(rdata[i+1] - rdata[i1+1]) +
+                    const magnitude = Math.sqrt(sumGx * sumGx + sumGy * sumGy);
+                    gradientMagnitudeData[y * width + x] = magnitude;
+                    if (magnitude > maxGradient) maxGradient = magnitude;
+                }
+            }
+            
+            if (maxGradient > 0) {
+                for (let i = 0; i < gradientMagnitudeData.length; i++) {
+                    gradientMagnitudeData[i] = (gradientMagnitudeData[i] / maxGradient) * 255;
+                }
+            }
+        }
+
+        function applyThresholdAndDrawSobel(threshold) {
+            if (!gradientMagnitudeData || !sobelCanvas || !grayscaleCanvas) return;
+
+            const width = grayscaleCanvas.width;
+            const height = grayscaleCanvas.height;
+            
+            sobelCanvas.width = width;
+            sobelCanvas.height = height;
+            const ctxSobel = sobelCanvas.getContext('2d');
+            const outputImageData = ctxSobel.createImageData(width, height);
+            const outputData = outputImageData.data;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const i = y * width + x;
+                    const magnitude = gradientMagnitudeData[i] || 0;
+                    const edgeColor = magnitude > threshold ? 255 : 0;
+                    const pixelIndex = i * 4;
+                    outputData[pixelIndex] = edgeColor;
+                    outputData[pixelIndex + 1] = edgeColor;
+                    outputData[pixelIndex + 2] = edgeColor;
+                    outputData[pixelIndex + 3] = 255;
+                }
+            }
+            ctxSobel.putImageData(outputImageData, 0, 0);
+        }
+
+        function processImageForSobel(imageElement) {
+            grayscaleCanvas.width = imageElement.naturalWidth;
+            grayscaleCanvas.height = imageElement.naturalHeight;
+            const ctxGrayscale = grayscaleCanvas.getContext('2d');
+            ctxGrayscale.drawImage(imageElement, 0, 0, imageElement.naturalWidth, imageElement.naturalHeight);
+            
+            grayscaleImageData = convertToGrayscale(grayscaleCanvas);
+            ctxGrayscale.putImageData(grayscaleImageData,0,0);
+
+            applySobel(grayscaleImageData);
+        }
+
+        function handleFileLoad(file, triggerInput) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showContentState(e.target.result);
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    if (triggerInput === primaryFileInput) {
+                        secondaryFileInput.files = dataTransfer.files;
+                    } else if (triggerInput === secondaryFileInput) {
+                        primaryFileInput.files = dataTransfer.files;
+                    }
+                }
+                reader.readAsDataURL(file);
+            } else {
+                if (uploadedImageDisplay.getAttribute('src') === '#' || !uploadedImageDisplay.getAttribute('src')) {
+                    showInitialState();
+                }
+            }
+        }
+        
+        if (sobelThresholdSlider) {
+            sobelThresholdSlider.addEventListener('input', function() {
+                if(thresholdValueDisplay) thresholdValueDisplay.textContent = this.value;
+                applyThresholdAndDrawSobel(parseInt(this.value));
+            });
+        }
+
+        initialUploadPrompt.addEventListener('click', () => { primaryFileInput.click(); });
+        primaryFileInput.addEventListener('change', function() { handleFileLoad(this.files[0], this); });
+        changeImageButton.addEventListener('click', () => { secondaryFileInput.click(); });
+        secondaryFileInput.addEventListener('change', function() { handleFileLoad(this.files[0], this); });
+
+        showInitialState();
+    </script>
+</body>
+</html>
