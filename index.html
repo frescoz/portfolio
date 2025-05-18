@@ -3,232 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Vision</title>
+    <title>Computer Vision Interattivo</title>
     <style>
-        /* === Stili Globali === */
-        html {
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
-        *, *::before, *::after {
-            box-sizing: inherit;
-        }
+        /* CSS INVARIATO DALLA RISPOSTA PRECEDENTE */
+        html { box-sizing: border-box; overflow-x: hidden; }
+        *, *::before, *::after { box-sizing: inherit; }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #f0fff0;
-            font-family: Helvetica, sans-serif;
-            padding-top: 70px;
+            margin: 0; padding: 0; background-color: #000; color: #f0fff0;
+            font-family: Helvetica, sans-serif; padding-top: 70px;
         }
-
-        /* === Header === */
         .site-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #000;
-            z-index: 1000;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; background-color: #000;
+            z-index: 1000; padding: 10px 20px; display: flex;
+            justify-content: space-between; align-items: center;
         }
-        .site-header.with-border {
-            border-bottom: 1px solid #fff;
-        }
+        .site-header.with-border { border-bottom: 1px solid #fff; }
         .site-header h1 {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #7cfc00;
-            margin: 0;
-            display: none;
+            font-size: 1.8em; font-weight: bold; color: #7cfc00; margin: 0; display: none;
+            cursor: pointer; user-select: none;
         }
-        #change-image-controls {
-            display: none;
-        }
+        #change-image-controls { display: none; }
         #change-image-button {
-            color: #fff;
-            font-size: 0.9em;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-            padding: 8px 12px;
-            background-color: transparent;
-            border: 1px solid #fff;
-            border-radius: 4px;
+            color: #fff; font-size: 0.9em; cursor: pointer; text-transform: uppercase;
+            font-weight: bold; padding: 8px 12px; background-color: transparent;
+            border: 1px solid #fff; border-radius: 4px;
         }
-        #change-image-button:hover {
-            background-color: #333;
-        }
-
+        #change-image-button:hover { background-color: #333; }
         #initial-upload-prompt {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #7cfc00;
-            text-align: center;
-            cursor: pointer;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 900;
+            font-size: 2.5em; font-weight: bold; color: #7cfc00; text-align: center;
+            cursor: pointer; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); z-index: 900; display: block;
         }
-
-        .hidden-file-input {
-            display: none;
-        }
-
-        #main-content-wrapper {
-            display: none;
-        }
-
+        .hidden-file-input { display: none; }
+        #main-content-wrapper { display: none; }
         .content-block {
-            max-width: 960px;
-            margin-left: 20px;
-            margin-right: 20px;
-            padding-top: 20px;
-            padding-bottom: 0;
-            padding-left: 0;
-            padding-right: 20px;
+            max-width: 960px; margin-left: 20px; margin-right: 20px; padding-top: 20px;
+            padding-bottom: 0; padding-left: 0; padding-right: 20px;
         }
         #uploaded-image-section {}
-        .technique-entry {
-            padding-bottom: 20px;
+         #main-image-display-wrapper {
+            position: relative; display: inline-block; max-width:100%; line-height: 0;
         }
+        #main-image-display-wrapper canvas#main-display-canvas, /* Modificato da img a canvas */
+        #main-image-display-wrapper canvas#uploaded-image-numeric-overlay {
+            max-width: 100%; height: auto; display: block; 
+        }
+        #uploaded-image-numeric-overlay{
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; background-color: #000; 
+        }
+        .technique-entry { padding-bottom: 20px; }
         .content-block h2 {
-            font-size: 1.8em;
-            color: #7cfc00;
-            font-weight: bold;
-            margin-top: 0;
-            margin-bottom: 15px;
+            font-size: 1.8em; color: #7cfc00; font-weight: bold; margin-top: 0; margin-bottom: 15px;
         }
-        .content-block p {
-            margin-bottom: 15px;
+        .content-block p { margin-bottom: 15px; line-height: 1.6; }
+        .image-sub-text { font-size: 8pt; color: #a9a9a9; text-align: left; margin-bottom: 15px;}
+        #grayscale-canvas, #sobel-canvas, #optical-flow-canvas, 
+        #lowe-features-canvas, #lowe-recognition-canvas,
+        #objdetect-original-canvas, #objdetect-grayscale-canvas, #objdetect-binary-canvas, #objdetect-result-canvas,
+        #cnn-input-patch-canvas, .feature-map-output-canvas, .kernel-viz-canvas
+         { 
+            max-width: 100%; height: auto; display: block;
+            border: 1px solid #444; margin-bottom: 8pt; background-color: #111;
         }
-        #uploaded-image-display, .modified-image-display {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin-bottom: 8pt;
-        }
-        .image-sub-text {
-            font-size: 8pt;
-            color: #a9a9a9;
-            text-align: left;
-            margin-bottom: 15px; /* Questo margine influenzerà l'allineamento con flex-end */
-        }
-
-        /* === Stili per la Dimostrazione Sobel === */
-        .sobel-demonstration .image-comparison-container {
-            display: flex;
-            /* gap: 10px; /* Spazio tra gli elementi ridotto ulteriormente */
-            margin-bottom: 15px;
-            align-items: flex-end; /* Allinea gli elementi flex (immagini e controlli slider) alla loro base */
-        }
-        .sobel-demonstration .image-container {
-            flex: 1;
-            min-width: 0;
-            margin-right: 10px; /* Spazio tra contenitori immagine e controlli slider */
-        }
-        .sobel-demonstration .image-container:last-of-type { /* Rimuove margine destro per l'ultimo contenitore immagine prima dello slider */
-             margin-right: 0;
-        }
-
-        .sobel-demonstration canvas {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            border: 1px solid #444;
-            margin-bottom: 8pt;
-        }
-        
-        .sobel-controls-vertical {
-            display: flex;
-            flex-direction: column; /* Slider sopra, etichetta sotto */
-            align-items: center;
-            margin-left: 10px;    /* Avvicina lo slider all'immagine Sobel */
-            width: auto; /* Lascia che la larghezza sia definita dal contenuto (slider e etichetta) */
-            min-width: 40px; /* Per assicurare un po' di spazio per l'etichetta */
-            /* La parte inferiore di questo blocco si allineerà con la parte inferiore
-               dei p.image-sub-text grazie a align-items: flex-end sul genitore */
-        }
-        .sobel-controls-vertical label {
-            font-size: 0.9em;
-            font-weight: bold; /* Richiesto */
-            color: #fff;       /* Richiesto */
-            white-space: nowrap;
-            /* margin-top: 8px; Spazio dallo slider sopra, gestito da margin-bottom dello slider */
-        }
-
-        #sobel-threshold-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 150px;  /* LUNGHEZZA dello slider verticale */
-            height: 22px;  /* LARGHEZZA/spessore dell'area cliccabile (include spazio per thumb) */
-            background: transparent;
-            cursor: pointer;
-            margin: 0;
-            transform-origin: center center;
-            transform: rotate(-90deg);
-            margin-bottom: 25px; /* Spazio tra slider ruotato (ora la sua "base" è a destra) e l'etichetta sotto */
-                                /* Questo valore potrebbe necessitare di aggiustamenti per l'allineamento visivo */
-        }
-
-        #sobel-threshold-slider::-webkit-slider-runnable-track {
-            width: 100%; /* Lunghezza della track (150px) */
-            height: 8px; /* Spessore della track */
-            background: #fff;
-            border-radius: 4px;
-            border: none; /* Rimosso bordo */
-        }
-        #sobel-threshold-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #7cfc00;
-            border-radius: 0; /* Quadrato */
-            border: none; /* Rimosso bordo */
-            margin-top: -6px; /* (8px track / 2) - (20px thumb / 2) = 4px - 10px = -6px */
-        }
-
-        #sobel-threshold-slider::-moz-range-track {
-            width: 100%;
-            height: 8px;
-            background: #fff;
-            border-radius: 4px;
-            border: none; /* Rimosso bordo */
-        }
-        #sobel-threshold-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #7cfc00;
-            border-radius: 0; /* Quadrato */
-            border: none; /* Rimosso bordo */
-        }
-
-        .full-bleed-separator {
-            width: 100%;
-            height: 1px;
-            background-color: #fff;
-            margin-top: 40px;
-            margin-bottom: 40px;
-        }
-
-        #credits-info {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            color: #fff;
-            font-size: 0.9em;
-            font-weight: bold;
-            text-align: right;
-            line-height: 1.3;
-            z-index: 1000;
-            display: none;
-        }
+        .sobel-demonstration .image-comparison-container { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 15px;}
+        .sobel-demonstration .image-container { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+        .sobel-slider-wrapper { position: relative; width: 200px; margin-top: 10px; }
+        #sobel-threshold-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: transparent; cursor: pointer; display: block; margin: 0; }
+        .sobel-slider-label { position: absolute; right: 100%; top: 50%; transform: translateY(-50%); margin-right: 10px; font-size: 0.9em; font-weight: bold; color: #fff; white-space: nowrap; }
+        #sobel-threshold-slider::-webkit-slider-runnable-track { width: 100%; height: 8px; background: #fff; border-radius: 0px; border: none; }
+        #sobel-threshold-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; background: #7cfc00; border-radius: 0px; border: none; margin-top: -6px; }
+        #sobel-threshold-slider::-moz-range-track { width: 100%; height: 8px; background: #fff; border-radius: 0px; border: none; }
+        #sobel-threshold-slider::-moz-range-thumb { width: 20px; height: 20px; background: #7cfc00; border-radius: 0px; border: none; }
+        .multi-canvas-demo-container { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-start; margin-bottom: 10px; }
+        .multi-canvas-demo-container .canvas-item { flex: 1; min-width: 180px; display: flex; flex-direction: column; align-items: center; }
+        .blob-threshold-controls { display: flex; align-items: center; justify-content: center; margin-top: 5px; width: 100%;}
+        .blob-threshold-controls label{ font-size: 0.9em; font-weight: bold; color: #fff; white-space: nowrap; margin-right: 10px; }
+        #binary-threshold-slider { width: 150px; }
+        .cnn-demo-container { margin-top: 15px; }
+        .cnn-input-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+        .cnn-feature-maps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+        .cnn-feature-map-item { display: flex; flex-direction: column; align-items: center; }
+        .kernel-visualization-wrapper { display: flex; flex-direction: column; align-items: center; }
+        .kernel-visualization-wrapper .image-sub-text { margin-bottom: 3px; }
+        .kernel-viz-canvas { width: 60px; height: 60px; border: 1px solid #666 !important; margin-bottom: 5px !important; }
+        .kernel-matrix-text { font-family: monospace; font-size: 0.75em; white-space: pre; background-color: #2a2a2a; padding: 5px; border: 1px solid #444; color: #ccc; border-radius: 3px; text-align: center; line-height: 1.1; margin-top: 3px; min-height: 3.5em; }
+        .cnn-feature-map-item .image-sub-text { font-size: 7pt; }
+        .sobel-section-block { padding-bottom: 15px; }
+        .sobel-section-block + .full-bleed-separator { margin-top: 20px; }
+        .full-bleed-separator { width: 100%; height: 1px; background-color: #fff; margin-top: 40px; margin-bottom: 40px; }
+        .demo-separator-within-section { border: none; height: 1px; background-color: #555; margin-top: 30px; margin-bottom: 20px; }
+        #credits-info { position: fixed; bottom: 20px; right: 20px; color: #fff; font-size: 0.9em; font-weight: bold; text-align: right; line-height: 1.3; z-index: 1000; display: none; }
     </style>
 </head>
 <body>
@@ -246,58 +111,40 @@
 
     <div id="main-content-wrapper">
         <div class="content-block" id="uploaded-image-section">
-            <img id="uploaded-image-display" src="#" alt="Immagine caricata">
-            <p class="image-sub-text">Immagine caricata dall'utente.</p>
-        </div>
-
-        <div class="full-bleed-separator"></div>
-
-        <div class="content-block technique-entry">
-            <h2>Primi Tentativi e Riconoscimento di Forme (Anni '60-'70)</h2>
-            <p>I primi approcci alla computer vision si concentravano sul riconoscimento di forme geometriche semplici e sull'analisi di immagini binarie. Tecniche come l'estrazione dei bordi (ad esempio con l'algoritmo di Sobel) e la segmentazione basata su soglie erano fondamentali.</p>
-            
-            <div class="sobel-demonstration">
-                <div class="image-comparison-container">
-                    <div class="image-container" id="grayscale-image-wrapper">
-                        <canvas id="grayscale-canvas"></canvas>
-                        <p class="image-sub-text">Immagine in Scala di Grigi</p>
-                    </div>
-                    <div class="image-container" id="sobel-image-wrapper">
-                        <canvas id="sobel-canvas"></canvas>
-                        <p class="image-sub-text">Rilevamento Bordi (Sobel)</p>
-                    </div>
-                    <div class="sobel-controls-vertical">
-                        <input type="range" id="sobel-threshold-slider" min="0" max="255" value="100"> <label for="sobel-threshold-slider">K: <span id="threshold-value-display">100</span></label>
-                    </div>
-                </div>
+            <div id="main-image-display-wrapper">
+                <canvas id="main-display-canvas"></canvas> 
+                <canvas id="uploaded-image-numeric-overlay"></canvas>
             </div>
+            <p class="image-sub-text" id="main-image-sub-text">Immagine caricata dall'utente.</p>
         </div>
 
         <div class="full-bleed-separator"></div>
-
-        <div class="content-block technique-entry">
+        <div class="content-block technique-entry sobel-section-block" data-demo-type="sobel">
+            <h2>Primi Tentativi e Riconoscimento di Forme (Anni '60-'70)</h2>
+            <p>I primi approcci si concentravano sull'analisi di forme semplici e immagini binarie. L'estrazione dei bordi, come con l'algoritmo di Sobel, era cruciale. Il processo: Immagine -> Scala di Grigi -> Calcolo Gradiente -> Bordi.</p>
+            <div class="sobel-demonstration"> <div class="image-comparison-container"> <div class="image-container" id="grayscale-image-wrapper"> <canvas id="grayscale-canvas"></canvas> <p class="image-sub-text">1. Immagine in Scala di Grigi</p> </div> <div class="image-container" id="sobel-image-wrapper"> <canvas id="sobel-canvas"></canvas> <p class="image-sub-text">2. Bordi Rilevati (Sobel)</p> <div class="sobel-slider-wrapper"> <label for="sobel-threshold-slider" class="sobel-slider-label">K (Soglia):&nbsp;<span id="threshold-value-display">100</span></label> <input type="range" id="sobel-threshold-slider" min="0" max="255" value="100"> </div> </div> </div> </div>
+        </div>
+        <div class="full-bleed-separator"></div>
+        <div class="content-block technique-entry" id="visione-3d-section" data-demo-type="visione-3d">
             <h2>Visione 3D e Modellazione (Anni '80)</h2>
-            <p>Negli anni '80, la ricerca si spostò verso la comprensione della geometria tridimensionale a partire da immagini 2D. Tecniche come la fotogrammetria e l'analisi del flusso ottico iniziarono a svilupparsi.</p>
-            <img class="modified-image-display" src="placeholder_3d.png" alt="Ricostruzione 3D approssimata">
-            <p class="image-sub-text">Esempio di ricostruzione 3D approssimata.</p>
+            <p>Si iniziò a esplorare come ottenere informazioni 3D da immagini 2D. Il flusso ottico analizza come i punti in un'immagine si muovono tra frame successivi. Un movimento in avanti della camera, ad esempio, crea un 'Focus of Expansion' (FOE), un punto da cui i vettori di flusso sembrano divergere, fornendo indizi sulla direzione del movimento e sulla profondità relativa.</p>
+            <canvas id="optical-flow-canvas"></canvas><p class="image-sub-text">Demo 1: Flusso Ottico (Simulazione Focus of Expansion)</p>
+            <hr class="demo-separator-within-section">
+            <p>Parallelamente, si cercava di riconoscere oggetti 3D e la loro posa da una singola immagine 2D (es. D. Lowe). Il processo concettuale prevedeva: Immagine Originale -> Estrazione di Caratteristiche Salienti (come i bordi) -> Raggruppamento di queste caratteristiche per ipotizzare la presenza e la posa di un Oggetto 3D (cubo rotante).</p>
+            <div class="multi-canvas-demo-container"><div class="canvas-item"><canvas id="lowe-features-canvas"></canvas><p class="image-sub-text">Passo 1: Bordi Salienti (da Sobel)</p></div><div class="canvas-item"><canvas id="lowe-recognition-canvas"></canvas><p class="image-sub-text">Passo 2: Ipotesi Oggetto 3D (Cubo Rotante)</p></div></div>
         </div>
-
         <div class="full-bleed-separator"></div>
-
-        <div class="content-block technique-entry">
+        <div class="content-block technique-entry" id="object-recognition-ml-section" data-demo-type="object-recognition">
             <h2>Riconoscimento di Oggetti e Machine Learning (Anni '90-'2000)</h2>
-            <p>L'avvento del machine learning ha rivoluzionato la computer vision, portando a progressi significativi nel riconoscimento di oggetti, nell'analisi di scene e nel tracciamento video. Algoritmi come SVM e le prime reti neurali hanno giocato un ruolo cruciale.</p>
-            <img class="modified-image-display" src="placeholder_oggetti.png" alt="Oggetti rilevati">
-            <p class="image-sub-text">Esempio di immagine con oggetti rilevati.</p>
+            <p>L'apprendimento automatico ha introdotto metodi per "addestrare" i computer a riconoscere oggetti. Un approccio basilare è il rilevamento di regioni connesse (blob) dopo aver semplificato l'immagine (es. binarizzazione). Processo: Immagine Originale -> Scala di Grigi -> Binarizzazione (soglia K) -> Rilevamento Blob e Bounding Box sull'originale.</p>
+            <div class="multi-canvas-demo-container"><div class="canvas-item"><canvas id="objdetect-original-canvas"></canvas><p class="image-sub-text">0. Immagine Originale</p></div><div class="canvas-item"><canvas id="objdetect-grayscale-canvas"></canvas><p class="image-sub-text">1. Scala di Grigi</p></div><div class="canvas-item"><canvas id="objdetect-binary-canvas"></canvas><p class="image-sub-text">2. Immagine Binarizzata</p></div><div class="canvas-item"><canvas id="objdetect-result-canvas"></canvas><p class="image-sub-text">3. Rilevamento Blob</p></div></div>
+            <div class="sobel-slider-wrapper" style="width: 280px;"><label for="binary-threshold-slider" class="sobel-slider-label" style="width:110px; text-align:left;">K Binarizz.:&nbsp;<span id="binary-threshold-value-display">128</span></label><input type="range" id="binary-threshold-slider" min="0" max="255" value="128" style="width:100%;"></div>
         </div>
-
         <div class="full-bleed-separator"></div>
-
-        <div class="content-block technique-entry">
+        <div class="content-block technique-entry" id="deep-learning-ai-section" data-demo-type="deep-learning">
             <h2>Deep Learning e Intelligenza Artificiale (Anni 2010-oggi)</h2>
-            <p>L'esplosione del deep learning, con architetture come le CNN (Convolutional Neural Networks), ha portato a prestazioni senza precedenti in molti compiti di computer vision, come il riconoscimento facciale, la guida autonoma e l'analisi medica.</p>
-            <img class="modified-image-display" src="placeholder_deeplearning.png" alt="Analisi avanzata">
-            <p class="image-sub-text">Esempio di analisi avanzata con deep learning.</p>
+            <p>Le Reti Neurali Convoluzionali (CNN) processano le immagini applicando una serie di filtri (kernel) per estrarre gerarchie di caratteristiche. Ogni kernel è una piccola matrice di numeri. Applicando il kernel all'immagine (convoluzione), si ottiene una 'feature map' che evidenzia la presenza di specifici pattern.</p>
+            <div class="cnn-demo-container"><div class="cnn-input-area"><canvas id="cnn-input-patch-canvas"></canvas><p class="image-sub-text">Input Patch (porzione immagine in grayscale)</p></div><p style="text-align:center; width:100%; margin-bottom:15px;">Esempi di Kernel (Filtri 3x3) e le Feature Map Risultanti:</p><div class="cnn-feature-maps-grid"><div class="cnn-feature-map-item"><div class="kernel-visualization-wrapper"><p class="image-sub-text">Kernel 1:</p><canvas class="kernel-viz-canvas" id="kernel-viz-canvas-1"></canvas><div class="kernel-matrix-text" id="kernel-matrix-text-1"></div></div><canvas class="feature-map-output-canvas" id="feature-map-output-1"></canvas><p class="image-sub-text" id="feature-map-subtext-1">Output Filtro 1</p></div><div class="cnn-feature-map-item"><div class="kernel-visualization-wrapper"><p class="image-sub-text">Kernel 2:</p><canvas class="kernel-viz-canvas" id="kernel-viz-canvas-2"></canvas><div class="kernel-matrix-text" id="kernel-matrix-text-2"></div></div><canvas class="feature-map-output-canvas" id="feature-map-output-2"></canvas><p class="image-sub-text" id="feature-map-subtext-2">Output Filtro 2</p></div><div class="cnn-feature-map-item"><div class="kernel-visualization-wrapper"><p class="image-sub-text">Kernel 3:</p><canvas class="kernel-viz-canvas" id="kernel-viz-canvas-3"></canvas><div class="kernel-matrix-text" id="kernel-matrix-text-3"></div></div><canvas class="feature-map-output-canvas" id="feature-map-output-3"></canvas><p class="image-sub-text" id="feature-map-subtext-3">Output Filtro 3</p></div><div class="cnn-feature-map-item"><div class="kernel-visualization-wrapper"><p class="image-sub-text">Kernel 4:</p><canvas class="kernel-viz-canvas" id="kernel-viz-canvas-4"></canvas><div class="kernel-matrix-text" id="kernel-matrix-text-4"></div></div><canvas class="feature-map-output-canvas" id="feature-map-output-4"></canvas><p class="image-sub-text" id="feature-map-subtext-4">Output Filtro 4</p></div></div></div>
         </div>
     </div>
 
@@ -308,217 +155,212 @@
     </div>
 
     <script>
-        // Elementi DOM
+        // --- VARIABILI DOM GLOBALI ---
         const siteHeader = document.querySelector('.site-header');
-        const headerTitle = siteHeader.querySelector('h1');
+        const headerTitle = siteHeader ? siteHeader.querySelector('h1') : null; 
         const changeImageControls = document.getElementById('change-image-controls');
         const changeImageButton = document.getElementById('change-image-button');
         const secondaryFileInput = document.getElementById('secondary-file-input');
-
         const initialUploadPrompt = document.getElementById('initial-upload-prompt');
         const primaryFileInput = document.getElementById('primary-file-input');
-
         const mainContentWrapper = document.getElementById('main-content-wrapper');
-        const uploadedImageDisplay = document.getElementById('uploaded-image-display');
-        const modifiedImageDisplays = document.querySelectorAll('.modified-image-display');
-
-
+        
+        const mainDisplayCanvas = document.getElementById('main-display-canvas'); 
+        const uploadedImageNumericOverlay = document.getElementById('uploaded-image-numeric-overlay'); 
+        const mainImageSubText = document.getElementById('main-image-sub-text'); 
+        
         const creditsInfo = document.getElementById('credits-info');
-
-        const placeholderImages = [ 
-            'placeholder_3d.png',
-            'placeholder_oggetti.png',
-            'placeholder_deeplearning.png'
-        ];
-
+        
         const grayscaleCanvas = document.getElementById('grayscale-canvas');
         const sobelCanvas = document.getElementById('sobel-canvas');
         const sobelThresholdSlider = document.getElementById('sobel-threshold-slider');
         const thresholdValueDisplay = document.getElementById('threshold-value-display');
-
-        let grayscaleImageData = null; 
+        let grayscaleImageDataForSobel = null; 
         let gradientMagnitudeData = null; 
 
+        const opticalFlowCanvas = document.getElementById('optical-flow-canvas');
+        const loweFeaturesCanvas = document.getElementById('lowe-features-canvas');
+        const loweRecognitionCanvas = document.getElementById('lowe-recognition-canvas');
+        let loweCubeAnimationId = null; 
+        let loweCubeCurrentAngleY = 0;
+        let sumXGlobalLowe = 0, sumYGlobalLowe = 0, edgePixelsCountGlobalLowe = 0;
 
-        function showInitialState() {
-            headerTitle.style.display = 'none';
-            siteHeader.classList.remove('with-border');
-            changeImageControls.style.display = 'none';
-            initialUploadPrompt.style.display = 'block';
-            mainContentWrapper.style.display = 'none';
-            creditsInfo.style.display = 'none';
+        const objdetectOriginalCanvas = document.getElementById('objdetect-original-canvas');
+        const objdetectGrayscaleCanvas = document.getElementById('objdetect-grayscale-canvas');
+        const objdetectBinaryCanvas = document.getElementById('objdetect-binary-canvas');
+        const objdetectResultCanvas = document.getElementById('objdetect-result-canvas');
+        const binaryThresholdSlider = document.getElementById('binary-threshold-slider');
+        const binaryThresholdValueDisplay = document.getElementById('binary-threshold-value-display');
+        
+        const cnnInputPatchCanvas = document.getElementById('cnn-input-patch-canvas');
+        const featureMapOutputCanvases = [ 
+            document.getElementById('feature-map-output-1'), document.getElementById('feature-map-output-2'),
+            document.getElementById('feature-map-output-3'), document.getElementById('feature-map-output-4')
+        ];
+        const kernelVizCanvases = [ 
+            document.getElementById('kernel-viz-canvas-1'), document.getElementById('kernel-viz-canvas-2'),
+            document.getElementById('kernel-viz-canvas-3'), document.getElementById('kernel-viz-canvas-4')
+        ];
+        const kernelMatrixTexts = [ 
+            document.getElementById('kernel-matrix-text-1'), document.getElementById('kernel-matrix-text-2'),
+            document.getElementById('kernel-matrix-text-3'), document.getElementById('kernel-matrix-text-4')
+        ];
+        const featureMapSubtexts = [
+             document.getElementById('feature-map-subtext-1'), document.getElementById('feature-map-subtext-2'),
+             document.getElementById('feature-map-subtext-3'), document.getElementById('feature-map-subtext-4')
+        ];
+        
+        let currentUploadedImage = null; 
+        let demoObserver = null;      
+        let demoRenderFlags = {};   
+        let isNumericViewActive = false;
+        const numericViewBlockSize = 16; 
+        
+        // --- FUNZIONE CONVERTITOGRAYSCALE (CORRETTA E ROBUSTA) ---
+        function convertToGrayscale(sourceCanvasOrImageData) {
+            let imageDataObj; 
+            let sourceWidth, sourceHeight;
+            if (!sourceCanvasOrImageData) { console.error("convertToGrayscale: Input nullo."); return null; }
 
-            modifiedImageDisplays.forEach((img, index) => {
-                if (placeholderImages[index]) {
-                    img.src = placeholderImages[index];
-                }
-            });
-            if (uploadedImageDisplay.getAttribute('src') !== '#') {
-                 uploadedImageDisplay.src = '#';
-            }
-            const canvases = [grayscaleCanvas, sobelCanvas];
-            canvases.forEach(canvas => {
-                if (canvas) {
-                    const ctx = canvas.getContext('2d');
-                    const parentWidth = canvas.parentElement.offsetWidth > 20 ? canvas.parentElement.offsetWidth - 10 : 180; // Stima larghezza disponibile
-                    const placeholderWidth = Math.max(50, parentWidth); // Evita larghezza 0 o negativa
-                    const placeholderHeight = placeholderWidth * 0.75;
-                    canvas.width = placeholderWidth; 
-                    canvas.height = placeholderHeight;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#222'; 
-                    ctx.fillRect(0,0,canvas.width, canvas.height);
-                    ctx.fillStyle = '#555'; 
-                    ctx.textAlign='center'; 
-                    ctx.font = '12px Helvetica';
-                    ctx.fillText('N/D', canvas.width/2, canvas.height/2); // N/D più corto
-                }
-            });
-            if(thresholdValueDisplay) thresholdValueDisplay.textContent = sobelThresholdSlider.value;
-        }
+            if (sourceCanvasOrImageData instanceof HTMLCanvasElement) {
+                const ctx = sourceCanvasOrImageData.getContext('2d'); 
+                if (!ctx) { console.error("convertToGrayscale: Impossibile ottenere context 2D da:", sourceCanvasOrImageData.id); return null; }
+                sourceWidth = sourceCanvasOrImageData.width; sourceHeight = sourceCanvasOrImageData.height;
+                if (sourceWidth === 0 || sourceHeight === 0) { console.warn("convertToGrayscale: Canvas sorgente con dimensione 0:", sourceCanvasOrImageData.id); return null;}
+                try { imageDataObj = ctx.getImageData(0, 0, sourceWidth, sourceHeight); } 
+                catch (e) { console.error("Errore getImageData:", e, sourceCanvasOrImageData.id); return null; }
+            } else if (sourceCanvasOrImageData instanceof ImageData) {
+                imageDataObj = sourceCanvasOrImageData; sourceWidth = imageDataObj.width; sourceHeight = imageDataObj.height;
+                 if (sourceWidth === 0 || sourceHeight === 0) { console.warn("convertToGrayscale: ImageData sorgente con dimensione 0."); return null;}
+            } else { console.error("convertToGrayscale: Tipo di input non valido."); return null; }
+            if (!imageDataObj) { console.error("convertToGrayscale: Impossibile ottenere ImageData finale."); return null; }
 
-        function showContentState(imageSrc) {
-            uploadedImageDisplay.src = imageSrc; 
-            modifiedImageDisplays.forEach(img => img.src = imageSrc);
-
-            headerTitle.style.display = 'block';
-            siteHeader.classList.add('with-border');
-            changeImageControls.style.display = 'flex';
-            initialUploadPrompt.style.display = 'none';
-            mainContentWrapper.style.display = 'block';
-            creditsInfo.style.display = 'block';
-
-            const tempImg = new Image();
-            tempImg.onload = () => {
-                processImageForSobel(tempImg); 
-                applyThresholdAndDrawSobel(parseInt(sobelThresholdSlider.value));
-            };
-            tempImg.src = imageSrc;
-        }
-
-        function convertToGrayscale(sourceCanvas) {
-            const ctx = sourceCanvas.getContext('2d');
-            const imageData = ctx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
-            const data = imageData.data;
+            const data = imageDataObj.data;
+            const newClampedArray = new Uint8ClampedArray(data); 
+            const newImageData = new ImageData(newClampedArray, sourceWidth, sourceHeight);
+            const newData = newImageData.data;
             for (let i = 0; i < data.length; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-                const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-                data[i] = data[i + 1] = data[i + 2] = gray;
+                const r = data[i], g = data[i+1], b = data[i+2];
+                const gray = 0.299 * r + 0.587 * g + 0.114 * b; 
+                newData[i] = newData[i+1] = newData[i+2] = gray;
             }
-            return imageData;
+            return newImageData;
         }
+        
+        // --- INCOLLA QUI TUTTE LE FUNZIONI JAVASCRIPT DELLE DEMO E HELPERS ---
+        // (getPixelBlockAverageRGB, drawNumbersOnCanvas, getAllDemoCanvases, 
+        //  animateMatrixTransition, showNumericView, hideNumericView,
+        //  drawCanvasPlaceholder, resetDemoRenderFlags, setupDemoObservers, 
+        //  processImageForSobel, applySobel, applyThresholdAndDrawSobel,
+        //  drawArrow, renderOpticalFlowDemo, drawWireframeCube, animateLoweCube, renderLoweInspiredDemo,
+        //  renderBlobDetectionDemo, applyConvolution, drawKernelVisualization, renderCnnFeatureMapsDemo)
+        //  ... Assicurati che siano le versioni complete e corrette ...
 
-        function applySobel(gsImageData) {
-            const width = gsImageData.width;
-            const height = gsImageData.height;
-            const data = gsImageData.data;
-            
-            gradientMagnitudeData = new Float32Array(width * height);
-            let maxGradient = 0;
-
-            const Gx = [[-1, 0, 1],[-2, 0, 2],[-1, 0, 1]];
-            const Gy = [[-1, -2, -1],[ 0,  0,  0],[ 1,  2,  1]];
-
-            for (let y = 1; y < height - 1; y++) {
-                for (let x = 1; x < width - 1; x++) {
-                    let sumGx = 0;
-                    let sumGy = 0;
-                    for (let ky = -1; ky <= 1; ky++) {
-                        for (let kx = -1; kx <= 1; kx++) {
-                            const pixel_idx = ((y + ky) * width + (x + kx)) * 4;
-                            const gray_val = data[pixel_idx];
-                            sumGx += gray_val * Gx[ky + 1][kx + 1];
-                            sumGy += gray_val * Gy[ky + 1][kx + 1];
-                        }
+        // Funzioni per la vista numerica (RGB) e animazione Matrix
+        function getPixelBlockAverageRGB(sourceImageData, startX, startY, blockWidth, blockHeight, imageWidth) { let rSum = 0, gSum = 0, bSum = 0, count = 0; for (let y = startY; y < startY + blockHeight && y < sourceImageData.height; y++) { for (let x = startX; x < startX + blockWidth && x < sourceImageData.width; x++) { const idx = (y * imageWidth + x) * 4; rSum += sourceImageData.data[idx]; gSum += sourceImageData.data[idx + 1]; bSum += sourceImageData.data[idx + 2]; count++; } } if (count === 0) return { r: 0, g: 0, b: 0 }; return { r: Math.round(rSum / count), g: Math.round(gSum / count), b: Math.round(bSum / count) }; }
+        function drawNumbersOnCanvas(targetCanvas, sourceImageData, blockSize) { if (!targetCanvas || !sourceImageData) { console.warn("drawNumbersOnCanvas: input mancanti"); return; } const targetCtx = targetCanvas.getContext('2d'); if (!targetCtx) { console.warn("drawNumbersOnCanvas: context mancante per canvas:", targetCanvas.id); return; } targetCanvas.width = sourceImageData.width; targetCanvas.height = sourceImageData.height; targetCtx.fillStyle = '#000000'; targetCtx.fillRect(0, 0, targetCanvas.width, targetCanvas.height); const fontSize = Math.max(4, Math.floor(blockSize / 3.9)); targetCtx.font = `${fontSize}px monospace`; targetCtx.textBaseline = 'top'; for (let y = 0; y < sourceImageData.height - blockSize / 2; y += blockSize) { for (let x = 0; x < sourceImageData.width - blockSize / 2; x += blockSize) { const avgColor = getPixelBlockAverageRGB(sourceImageData, x, y, blockSize, blockSize, sourceImageData.width); const rStr = avgColor.r.toString().padStart(3, '0'); const gStr = avgColor.g.toString().padStart(3, '0'); const bStr = avgColor.b.toString().padStart(3, '0'); let textY = y + 1; const textX = x + 1; targetCtx.fillStyle = 'rgba(255, 100, 100, 0.95)'; targetCtx.fillText(rStr, textX, textY); textY += fontSize * 1.1; targetCtx.fillStyle = 'rgba(100, 255, 100, 0.95)'; if (textY < y + blockSize - fontSize / 2) targetCtx.fillText(gStr, textX, textY); textY += fontSize * 1.1; targetCtx.fillStyle = 'rgba(100, 150, 255, 0.95)'; if (textY < y + blockSize - fontSize / 2) targetCtx.fillText(bStr, textX, textY); } } }
+        function getAllDemoCanvases() { return [grayscaleCanvas, sobelCanvas, opticalFlowCanvas, loweFeaturesCanvas, loweRecognitionCanvas, objdetectOriginalCanvas, objdetectGrayscaleCanvas, objdetectBinaryCanvas, objdetectResultCanvas, cnnInputPatchCanvas, ...featureMapOutputCanvases, ...kernelVizCanvases].filter(canvas => canvas != null); }
+        function animateMatrixTransition(canvas, isToNumeric, sourceOrRenderPayload, callback) { const ctx = canvas.getContext('2d'); if (!ctx || canvas.width === 0 || canvas.height === 0) { if (callback) callback(); return; } const width = canvas.width; const height = canvas.height; const duration = 400; let startTime = null; const charSize = Math.max(8, numericViewBlockSize / 2); ctx.font = `${charSize}px monospace`; const katakana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン01"; function step(timestamp) { if (!startTime) startTime = timestamp; const elapsed = timestamp - startTime; const progress = Math.min(elapsed / duration, 1); ctx.fillStyle = `rgba(0, 0, 0, ${isToNumeric ? 0.15 : 0.25})`; ctx.fillRect(0, 0, width, height); ctx.fillStyle = '#3f3'; const density = isToNumeric ? 30 : 50; for (let i = 0; i < density * (width/100); i++) { if (Math.random() > 0.3) { const x = Math.random() * width; const y = Math.random() * height; const char = katakana[Math.floor(Math.random() * katakana.length)]; ctx.fillText(char, x, y); } } if (progress < 1) { requestAnimationFrame(step); } else { if (callback) callback(); } } requestAnimationFrame(step); }
+        function showNumericView() { if (!currentUploadedImage || !currentUploadedImage.complete || currentUploadedImage.naturalWidth === 0 || isNumericViewActive) return; isNumericViewActive = true; if(mainImageSubText) mainImageSubText.textContent = "Dati RGB medi (per blocco di pixel):"; if (loweCubeAnimationId) { cancelAnimationFrame(loweCubeAnimationId); loweCubeAnimationId = null; } if (mainDisplayCanvas && currentUploadedImage.naturalWidth > 0) { const mainCtx = mainDisplayCanvas.getContext('2d'); if (mainCtx) { try { const tempCanvas = document.createElement('canvas'); tempCanvas.width = currentUploadedImage.naturalWidth; tempCanvas.height = currentUploadedImage.naturalHeight; const tempCtx = tempCanvas.getContext('2d'); tempCtx.drawImage(currentUploadedImage, 0, 0); const mainImageData = tempCtx.getImageData(0, 0, currentUploadedImage.naturalWidth, currentUploadedImage.naturalHeight); animateMatrixTransition(mainDisplayCanvas, true, null, () => { drawNumbersOnCanvas(mainDisplayCanvas, mainImageData, numericViewBlockSize); }); } catch(e) { console.error("Errore in showNumericView per mainDisplayCanvas", e); drawCanvasPlaceholder(mainDisplayCanvas, "NUM DATA (err)"); } } } getAllDemoCanvases().forEach(canvas => { if (canvas && getComputedStyle(canvas).display !== 'none' && canvas.width > 0 && canvas.height > 0) { const ctx = canvas.getContext('2d'); if (ctx) { try { const currentDemoImageData = ctx.getImageData(0, 0, canvas.width, canvas.height); animateMatrixTransition(canvas, true, null, () => { drawNumbersOnCanvas(canvas, currentDemoImageData, numericViewBlockSize); }); } catch (e) { console.warn("Vista numerica: Errore getImageData per canvas demo:", canvas.id, e); drawCanvasPlaceholder(canvas, "NUM DATA (err)"); } } } else if (canvas && canvas.id ) { drawCanvasPlaceholder(canvas, "NUM DATA"); } }); }
+        function hideNumericView() { if (!isNumericViewActive) return; isNumericViewActive = false; if(mainImageSubText) mainImageSubText.textContent = "Immagine caricata dall'utente."; if (currentUploadedImage && currentUploadedImage.complete && currentUploadedImage.naturalWidth > 0) { if (mainDisplayCanvas) { animateMatrixTransition(mainDisplayCanvas, false, null, () => { const ctx = mainDisplayCanvas.getContext('2d'); if (ctx) { mainDisplayCanvas.width = currentUploadedImage.naturalWidth; mainDisplayCanvas.height = currentUploadedImage.naturalHeight; ctx.drawImage(currentUploadedImage, 0, 0); } else { drawCanvasPlaceholder(mainDisplayCanvas); } }); } if (demoRenderFlags.sobel) { animateMatrixTransition(grayscaleCanvas, false, null, () => { if(grayscaleImageDataForSobel && grayscaleCanvas.getContext('2d')) grayscaleCanvas.getContext('2d').putImageData(grayscaleImageDataForSobel,0,0);}); animateMatrixTransition(sobelCanvas, false, null, () => { if(grayscaleImageDataForSobel && gradientMagnitudeData && sobelThresholdSlider) applyThresholdAndDrawSobel(parseInt(sobelThresholdSlider.value));}); } if (demoRenderFlags.opticalFlow && opticalFlowCanvas) animateMatrixTransition(opticalFlowCanvas, false, null, () => renderOpticalFlowDemo(currentUploadedImage)); if (demoRenderFlags.lowe && loweFeaturesCanvas && loweRecognitionCanvas) { animateMatrixTransition(loweFeaturesCanvas, false, null, () => {}); animateMatrixTransition(loweRecognitionCanvas, false, null, () => { if(!gradientMagnitudeData && grayscaleImageDataForSobel && typeof processImageForSobel === 'function') processImageForSobel(currentUploadedImage); renderLoweInspiredDemo(currentUploadedImage); }); } if (demoRenderFlags.blob && objdetectResultCanvas && binaryThresholdSlider) { animateMatrixTransition(objdetectOriginalCanvas, false, null, () => { if(objdetectOriginalCanvas && objdetectOriginalCanvas.getContext) { objdetectOriginalCanvas.width = currentUploadedImage.naturalWidth; objdetectOriginalCanvas.height = currentUploadedImage.naturalHeight; objdetectOriginalCanvas.getContext('2d').drawImage(currentUploadedImage,0,0); }}); animateMatrixTransition(objdetectResultCanvas, false, null, () => renderBlobDetectionDemo(currentUploadedImage, parseInt(binaryThresholdSlider.value))); } if (demoRenderFlags.cnn && cnnInputPatchCanvas) { animateMatrixTransition(cnnInputPatchCanvas, false, null, () => { renderCnnFeatureMapsDemo(currentUploadedImage); }); } } else { getAllDemoCanvases().forEach(canvas => {if (canvas !== mainDisplayCanvas) drawCanvasPlaceholder(canvas);}); if (mainDisplayCanvas) drawCanvasPlaceholder(mainDisplayCanvas);} }
+        
+        function drawCanvasPlaceholder(canvas, text = 'N/D') { if (!canvas) return; const ctx = canvas.getContext('2d'); if (!ctx) return; let phWidth = 200, phHeight = 150; const cs = canvas.parentElement ? getComputedStyle(canvas.parentElement) : null; const parentClientWidth = canvas.parentElement ? canvas.parentElement.clientWidth : 0; const parentPaddingLeft = cs ? parseFloat(cs.paddingLeft) : 0; const parentPaddingRight = cs ? parseFloat(cs.paddingRight) : 0; const availableParentWidth = parentClientWidth - parentPaddingLeft - parentPaddingRight; if (canvas.parentElement && canvas.parentElement.offsetParent && availableParentWidth > 0) { if (canvas.classList.contains('feature-map-output-canvas') || canvas.id === 'cnn-input-patch-canvas' || canvas.classList.contains('kernel-viz-canvas')) { phWidth = canvas.classList.contains('kernel-viz-canvas') ? 60 : Math.max(80, availableParentWidth > 10 ? availableParentWidth -5 : availableParentWidth * 0.9); phHeight = phWidth; } else { phWidth = Math.max(150, availableParentWidth > 20 ? availableParentWidth : availableParentWidth * 0.8); phHeight = phWidth * 0.75; } } else if (canvas.classList.contains('kernel-viz-canvas')) { phWidth = 60; phHeight = 60; } canvas.width = phWidth; canvas.height = phHeight; ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#222'; ctx.fillRect(0,0,canvas.width, canvas.height); ctx.fillStyle = '#555'; ctx.textAlign='center'; ctx.textBaseline = 'middle'; ctx.font = '10px Helvetica'; ctx.fillText(text, canvas.width/2, canvas.height/2); }
+        function resetDemoRenderFlags() { demoRenderFlags = { sobel: false, opticalFlow: false, lowe: false, blob: false, cnn: false }; if (loweCubeAnimationId) { cancelAnimationFrame(loweCubeAnimationId); loweCubeAnimationId = null; } }
+        function setupDemoObservers(imageElement) { if (demoObserver) { demoObserver.disconnect(); } const observerOptions = { root: null, rootMargin: '0px 0px 0px 0px', threshold: 0.05 }; const observerCallback = (entries, observerInstance) => { entries.forEach(entry => { if (entry.isIntersecting && !isNumericViewActive) { const demoType = entry.target.dataset.demoType; if (!imageElement || !imageElement.complete || imageElement.naturalWidth === 0) return; if (demoType === 'sobel' && !demoRenderFlags.sobel) { if (gradientMagnitudeData && sobelCanvas && sobelThresholdSlider && grayscaleImageDataForSobel) { applyThresholdAndDrawSobel(parseInt(sobelThresholdSlider.value)); } else { if(sobelCanvas) drawCanvasPlaceholder(sobelCanvas, "Errore Sobel");} demoRenderFlags.sobel = true; } else if (demoType === 'visione-3d') { if (!demoRenderFlags.opticalFlow && opticalFlowCanvas) { renderOpticalFlowDemo(imageElement); demoRenderFlags.opticalFlow = true; } if (!demoRenderFlags.lowe && loweFeaturesCanvas && loweRecognitionCanvas) { if (!gradientMagnitudeData && grayscaleImageDataForSobel && grayscaleCanvas && typeof processImageForSobel === 'function') processImageForSobel(imageElement); renderLoweInspiredDemo(imageElement); demoRenderFlags.lowe = true; } } else if (demoType === 'object-recognition' && !demoRenderFlags.blob) { if(objdetectOriginalCanvas && objdetectOriginalCanvas.getContext) { objdetectOriginalCanvas.width = imageElement.naturalWidth; objdetectOriginalCanvas.height = imageElement.naturalHeight; objdetectOriginalCanvas.getContext('2d').drawImage(imageElement,0,0); } if(binaryThresholdSlider) renderBlobDetectionDemo(imageElement, parseInt(binaryThresholdSlider.value)); demoRenderFlags.blob = true; } else if (demoType === 'deep-learning' && !demoRenderFlags.cnn) { if(cnnInputPatchCanvas) renderCnnFeatureMapsDemo(imageElement); demoRenderFlags.cnn = true; } } }); }; demoObserver = new IntersectionObserver(observerCallback, observerOptions); document.querySelectorAll('[data-demo-type]').forEach(section => { if(section) demoObserver.observe(section); }); }
+        function showInitialState() { console.log("showInitialState: Esecuzione."); if(headerTitle) headerTitle.style.display = 'none'; if(siteHeader) siteHeader.classList.remove('with-border'); if(changeImageControls) changeImageControls.style.display = 'none'; if(initialUploadPrompt) initialUploadPrompt.style.display = 'block'; if(mainContentWrapper) mainContentWrapper.style.display = 'none'; if(creditsInfo) creditsInfo.style.display = 'none'; currentUploadedImage = null; grayscaleImageDataForSobel = null; gradientMagnitudeData = null; isNumericViewActive = false; if(uploadedImageNumericOverlay) uploadedImageNumericOverlay.style.display = 'none'; if(mainDisplayCanvas) drawCanvasPlaceholder(mainDisplayCanvas, "Immagine Principale"); if(mainImageSubText) mainImageSubText.textContent = "Immagine caricata dall'utente."; getAllDemoCanvases().forEach(canvas => { if (canvas !== mainDisplayCanvas) drawCanvasPlaceholder(canvas); }); kernelMatrixTexts.forEach(kmt => {if(kmt) kmt.textContent = 'Kernel';}); featureMapSubtexts.forEach(fmst => {if(fmst) fmst.textContent = 'Feature Map';}); if(thresholdValueDisplay && sobelThresholdSlider) thresholdValueDisplay.textContent = sobelThresholdSlider.value; if(binaryThresholdValueDisplay && binaryThresholdSlider) binaryThresholdValueDisplay.textContent = binaryThresholdSlider.value; if (demoObserver) demoObserver.disconnect(); resetDemoRenderFlags();  }
+        function showContentState(imageSrc) { console.log("showContentState: Inizio."); if(!initialUploadPrompt || !mainContentWrapper || !mainDisplayCanvas || !headerTitle || !siteHeader || !changeImageControls || !creditsInfo || !mainImageSubText) { console.error("Errore DOM in showContentState."); return; } initialUploadPrompt.style.display = 'none'; mainContentWrapper.style.display = 'block'; mainImageSubText.textContent = "Immagine caricata dall'utente."; headerTitle.style.display = 'block'; siteHeader.classList.add('with-border'); changeImageControls.style.display = 'flex'; creditsInfo.style.display = 'block'; resetDemoRenderFlags(); currentUploadedImage = new Image(); currentUploadedImage.onload = () => { if (currentUploadedImage.naturalWidth === 0) { console.error("Immagine non valida dopo onload."); showInitialState(); if(initialUploadPrompt) {initialUploadPrompt.style.display = 'block'; initialUploadPrompt.textContent = "Errore: Img non valida.";} return; } console.log("currentUploadedImage.onload: WxH:", currentUploadedImage.naturalWidth, "x", currentUploadedImage.naturalHeight); if (mainDisplayCanvas) { mainDisplayCanvas.width = currentUploadedImage.naturalWidth; mainDisplayCanvas.height = currentUploadedImage.naturalHeight; const mainCtx = mainDisplayCanvas.getContext('2d'); if (mainCtx) mainCtx.drawImage(currentUploadedImage, 0, 0); else console.error("Context per mainDisplayCanvas nullo."); } else {console.error("mainDisplayCanvas nullo!");} if (grayscaleCanvas && sobelCanvas && typeof processImageForSobel === 'function') { processImageForSobel(currentUploadedImage); } else { console.warn("Elementi/funzione Sobel mancanti.");} if (typeof setupDemoObservers === 'function') setupDemoObservers(currentUploadedImage); else { console.error("setupDemoObservers non definita.");} }; currentUploadedImage.onerror = () => { console.error("Errore caricamento currentUploadedImage."); showInitialState(); if(initialUploadPrompt) { initialUploadPrompt.style.display = 'block'; initialUploadPrompt.textContent = "Errore caricamento img. Riprova.";}}; currentUploadedImage.src = imageSrc; }
+        
+        function processImageForSobel(imageElement){if(!grayscaleCanvas||!imageElement||!imageElement.naturalWidth||imageElement.naturalWidth===0){console.warn("processImageForSobel: prerequisiti mancanti."); drawCanvasPlaceholder(grayscaleCanvas); return;}grayscaleCanvas.width=imageElement.naturalWidth;grayscaleCanvas.height=imageElement.naturalHeight;const ctxGrayscale=grayscaleCanvas.getContext("2d");if(!ctxGrayscale){console.error("Ctx grayscaleCanvas nullo."); return;}ctxGrayscale.drawImage(imageElement,0,0,imageElement.naturalWidth,imageElement.naturalHeight);try{const tempImageData=ctxGrayscale.getImageData(0,0,grayscaleCanvas.width,grayscaleCanvas.height);grayscaleImageDataForSobel=convertToGrayscale(tempImageData);if(grayscaleImageDataForSobel){ctxGrayscale.putImageData(grayscaleImageDataForSobel,0,0);applySobel(grayscaleImageDataForSobel)}}catch(e){console.error("Errore in processImageForSobel:",e);drawCanvasPlaceholder(grayscaleCanvas,"Errore Proc. Sobel");}}
+        function applySobel(gsImageData){if(!gsImageData){console.warn("applySobel: gsImageData nullo.");return;}const width=gsImageData.width,height=gsImageData.height,data=gsImageData.data;gradientMagnitudeData=new Float32Array(width*height);let maxGradient=0;const Gx=[[-1,0,1],[-2,0,2],[-1,0,1]],Gy=[[-1,-2,-1],[0,0,0],[1,2,1]];for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){let sumGx=0,sumGy=0;for(let ky=-1;ky<=1;ky++)for(let kx=-1;kx<=1;kx++){const pixel_idx=((y+ky)*width+(x+kx))*4,gray_val=data[pixel_idx];sumGx+=gray_val*Gx[ky+1][kx+1];sumGy+=gray_val*Gy[ky+1][kx+1]}const magnitude=Math.sqrt(sumGx**2+sumGy**2);gradientMagnitudeData[y*width+x]=magnitude;if(magnitude>maxGradient)maxGradient=magnitude}if(maxGradient>0)for(let i=0;i<gradientMagnitudeData.length;i++)gradientMagnitudeData[i]=gradientMagnitudeData[i]/maxGradient*255; else { gradientMagnitudeData.fill(0);}}
+        function applyThresholdAndDrawSobel(threshold){if(!gradientMagnitudeData||!sobelCanvas||!grayscaleImageDataForSobel){console.warn("Dati mancanti per Sobel Threshold Draw"); if(sobelCanvas)drawCanvasPlaceholder(sobelCanvas,"Errore Dati Sobel"); return;} const width=grayscaleImageDataForSobel.width,height=grayscaleImageDataForSobel.height;sobelCanvas.width=width;sobelCanvas.height=height;const ctxSobel=sobelCanvas.getContext("2d");if(!ctxSobel)return;const outputImageData=ctxSobel.createImageData(width,height),outputData=outputImageData.data;for(let y=0;y<height;y++)for(let x=0;x<width;x++){const i=y*width+x,magnitude=gradientMagnitudeData[i]||0,edgeColor=magnitude>threshold?255:0,pixelIndex=i*4;outputData[pixelIndex]=outputData[pixelIndex+1]=outputData[pixelIndex+2]=edgeColor;outputData[pixelIndex+3]=255}ctxSobel.putImageData(outputImageData,0,0)}
+        function drawArrow(ctx,fromX,fromY,toX,toY,color="#7cfc00",headLength=8){const dx=toX-fromX,dy=toY-fromY,angle=Math.atan2(dy,dx);ctx.beginPath();ctx.moveTo(fromX,fromY);ctx.lineTo(toX,toY);ctx.lineTo(toX-headLength*Math.cos(angle-Math.PI/6),toY-headLength*Math.sin(angle-Math.PI/6));ctx.moveTo(toX,toY);ctx.lineTo(toX-headLength*Math.cos(angle+Math.PI/6),toY-headLength*Math.sin(angle+Math.PI/6));ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.stroke()}
+        function renderOpticalFlowDemo(sourceImageElement){if(!opticalFlowCanvas||!sourceImageElement||!sourceImageElement.naturalWidth||0===sourceImageElement.naturalWidth){drawCanvasPlaceholder(opticalFlowCanvas,"Flusso Ottico (FOE)");return}const canvasWidth=sourceImageElement.naturalWidth,canvasHeight=sourceImageElement.naturalHeight;opticalFlowCanvas.width=canvasWidth;opticalFlowCanvas.height=canvasHeight;const ctx=opticalFlowCanvas.getContext("2d");if(!ctx)return;const tempGrayscaleCanvas=document.createElement("canvas");tempGrayscaleCanvas.width=canvasWidth;tempGrayscaleCanvas.height=canvasHeight;const tempCtx=tempGrayscaleCanvas.getContext("2d");if(!tempCtx)return;tempCtx.drawImage(sourceImageElement,0,0,canvasWidth,canvasHeight);const currentGrayscaleImageData=convertToGrayscale(tempGrayscaleCanvas);currentGrayscaleImageData&&ctx.putImageData(currentGrayscaleImageData,0,0);const FOE_X=canvasWidth/2,FOE_Y=canvasHeight/2,zoomFactor=1.08,gridSize=30;ctx.globalAlpha=.85;if(FOE_X && FOE_Y){drawArrow(ctx,FOE_X-5,FOE_Y,FOE_X+5,FOE_Y,"#FF0000",4);drawArrow(ctx,FOE_X,FOE_Y-5,FOE_X,FOE_Y+5,"#FF0000",4);}for(let y=gridSize/2;y<canvasHeight;y+=gridSize)for(let x=gridSize/2;x<canvasWidth;x+=gridSize){const vecFromFoeX=x-FOE_X,vecFromFoeY=y-FOE_Y,xNew=FOE_X+vecFromFoeX*zoomFactor,yNew=FOE_Y+vecFromFoeY*zoomFactor;if(Math.sqrt((xNew-x)**2+(yNew-y)**2)>1)drawArrow(ctx,x,y,xNew,yNew,"#FF8C00",8)}ctx.globalAlpha=1}
+        function drawWireframeCube(ctx,centerX,centerY,size,viewAngles){const vertices=[{x:-1,y:-1,z:-1},{x:1,y:-1,z:-1},{x:1,y:1,z:-1},{x:-1,y:1,z:-1},{x:-1,y:-1,z:1},{x:1,y:-1,z:1},{x:1,y:1,z:1},{x:-1,y:1,z:1}],edges=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]],points2D=[],angleX=viewAngles.x,angleY=viewAngles.y;vertices.forEach(v_orig=>{const v={x:v_orig.x*size,y:v_orig.y*size,z:v_orig.z*size};let rotY_x=v.x*Math.cos(angleY)-v.z*Math.sin(angleY),rotY_z=v.x*Math.sin(angleY)+v.z*Math.cos(angleY),rotX_y=v.y*Math.cos(angleX)-rotY_z*Math.sin(angleX);points2D.push({x:centerX+rotY_x,y:centerY+rotX_y})});ctx.beginPath();ctx.strokeStyle="#00BCD4";ctx.lineWidth=1.5;edges.forEach(edge=>{const p1=points2D[edge[0]],p2=points2D[edge[1]];ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y)});ctx.stroke()}
+        function animateLoweCube(){if(!demoRenderFlags.lowe||!currentUploadedImage||!loweRecognitionCanvas||!loweRecognitionCanvas.getContext("2d")){loweCubeAnimationId=null;return}loweCubeCurrentAngleY+=.01;const canvasWidth=currentUploadedImage.naturalWidth,canvasHeight=currentUploadedImage.naturalHeight;const ctxRecognition=loweRecognitionCanvas.getContext("2d");if(!ctxRecognition){loweCubeAnimationId=null; return;}let baseGrayscaleLowe=grayscaleImageDataForSobel;if(!baseGrayscaleLowe&&currentUploadedImage){const tempC=document.createElement("canvas");tempC.width=canvasWidth;tempC.height=canvasHeight;const tempCTX=tempC.getContext("2d");if(tempCTX){tempCTX.drawImage(currentUploadedImage,0,0,canvasWidth,canvasHeight);baseGrayscaleLowe=convertToGrayscale(tempC)}}if(baseGrayscaleLowe){ctxRecognition.putImageData(baseGrayscaleLowe,0,0)}else{ctxRecognition.fillStyle="#111";ctxRecognition.fillRect(0,0,canvasWidth,canvasHeight)}let centroidX=canvasWidth/2,centroidY=canvasHeight/2;if(edgePixelsCountGlobalLowe>50){centroidX=sumXGlobalLowe/edgePixelsCountGlobalLowe;centroidY=sumYGlobalLowe/edgePixelsCountGlobalLowe}const cubeSize=Math.min(canvasWidth,canvasHeight)/7,cubeAngles={x:Math.PI/8,y:loweCubeCurrentAngleY};drawWireframeCube(ctxRecognition,centroidX,centroidY,cubeSize,cubeAngles);loweCubeAnimationId=requestAnimationFrame(animateLoweCube)}
+        function renderLoweInspiredDemo(sourceImageElement){if(!loweFeaturesCanvas||!loweRecognitionCanvas||!sourceImageElement||!sourceImageElement.naturalWidth||0===sourceImageElement.naturalWidth){drawCanvasPlaceholder(loweFeaturesCanvas,"Caratteristiche");drawCanvasPlaceholder(loweRecognitionCanvas,"Riconoscimento");return}const canvasWidth=sourceImageElement.naturalWidth,canvasHeight=sourceImageElement.naturalHeight;[loweFeaturesCanvas,loweRecognitionCanvas].forEach(c=>{if(c){c.width=canvasWidth;c.height=canvasHeight}});const ctxFeatures=loweFeaturesCanvas.getContext("2d");if(!ctxFeatures)return;let baseGrayscaleLowe=grayscaleImageDataForSobel;if(!baseGrayscaleLowe&&sourceImageElement){const tempC=document.createElement("canvas");tempC.width=canvasWidth;tempC.height=canvasHeight;const tempCTX=tempC.getContext("2d");if(tempCTX){tempCTX.drawImage(sourceImageElement,0,0,canvasWidth,canvasHeight);baseGrayscaleLowe=convertToGrayscale(tempC)}}if(!baseGrayscaleLowe){drawCanvasPlaceholder(loweFeaturesCanvas,"Errore Grayscale");return}ctxFeatures.putImageData(baseGrayscaleLowe,0,0);const threshold=sobelThresholdSlider?parseInt(sobelThresholdSlider.value):100;const edgeImageData=ctxFeatures.createImageData(canvasWidth,canvasHeight);const edgeData=edgeImageData.data;sumXGlobalLowe=0;sumYGlobalLowe=0;edgePixelsCountGlobalLowe=0;if(gradientMagnitudeData&&baseGrayscaleLowe){for(let i=0;i<gradientMagnitudeData.length;i++){const isEdge=(gradientMagnitudeData[i]||0)>threshold,baseColor=baseGrayscaleLowe.data[4*i],color=isEdge?255:baseColor;edgeData[4*i]=edgeData[4*i+1]=edgeData[4*i+2]=color;edgeData[4*i+3]=255;if(isEdge){const x=i%canvasWidth,y=Math.floor(i/canvasWidth);sumXGlobalLowe+=x;sumYGlobalLowe+=y;edgePixelsCountGlobalLowe++}}ctxFeatures.putImageData(edgeImageData,0,0)}else drawCanvasPlaceholder(loweFeaturesCanvas,"Dati Gradiente mancanti");loweCubeAnimationId&&cancelAnimationFrame(loweCubeAnimationId);loweCubeCurrentAngleY=-Math.PI/6;animateLoweCube()}
+        function renderBlobDetectionDemo(sourceImageElement,binaryThreshold){if(!objdetectOriginalCanvas||!objdetectGrayscaleCanvas||!objdetectBinaryCanvas||!objdetectResultCanvas||!sourceImageElement||!sourceImageElement.naturalWidth||0===sourceImageElement.naturalWidth){drawCanvasPlaceholder(objdetectOriginalCanvas,"Originale");drawCanvasPlaceholder(objdetectGrayscaleCanvas,"Grayscale");drawCanvasPlaceholder(objdetectBinaryCanvas,"Binaria");drawCanvasPlaceholder(objdetectResultCanvas,"Blob");return}const canvasWidth=sourceImageElement.naturalWidth,canvasHeight=sourceImageElement.naturalHeight;[objdetectOriginalCanvas,objdetectGrayscaleCanvas,objdetectBinaryCanvas,objdetectResultCanvas].forEach(c=>{if(c){c.width=canvasWidth;c.height=canvasHeight}});const ctxOriginal=objdetectOriginalCanvas.getContext("2d"),ctxGrayscale=objdetectGrayscaleCanvas.getContext("2d"),ctxBinary=objdetectBinaryCanvas.getContext("2d"),ctxResult=objdetectResultCanvas.getContext("2d");if(!ctxOriginal||!ctxGrayscale||!ctxBinary||!ctxResult)return;ctxOriginal.drawImage(sourceImageElement,0,0,canvasWidth,canvasHeight);ctxResult.drawImage(sourceImageElement,0,0,canvasWidth,canvasHeight);const tempCanvasForGrayscale=document.createElement("canvas");tempCanvasForGrayscale.width=canvasWidth;tempCanvasForGrayscale.height=canvasHeight;const tempCtxGs=tempCanvasForGrayscale.getContext("2d");if(!tempCtxGs)return;tempCtxGs.drawImage(sourceImageElement,0,0,canvasWidth,canvasHeight);const gsImageData=convertToGrayscale(tempCanvasForGrayscale);if(!gsImageData){drawCanvasPlaceholder(objdetectGrayscaleCanvas,"Errore Grayscale");return}ctxGrayscale.putImageData(gsImageData,0,0);const binaryImageData=ctxBinary.createImageData(canvasWidth,canvasHeight),binaryMap=new Uint8Array(canvasWidth*canvasHeight);for(let i=0;i<gsImageData.data.length;i+=4){const isForeground=gsImageData.data[i]>binaryThreshold,val=isForeground?255:0;binaryImageData.data[4*i]=binaryImageData.data[4*i+1]=binaryImageData.data[4*i+2]=val;binaryImageData.data[4*i+3]=255;binaryMap[i/4]=isForeground?1:0}ctxBinary.putImageData(binaryImageData,0,0);const visited=new Uint8Array(canvasWidth*canvasHeight),minBlobPixelCount=.003*canvasWidth*canvasHeight;ctxResult.strokeStyle="rgba(50,205,50,.9)";ctxResult.lineWidth=2;for(let y=0;y<canvasHeight;y++)for(let x=0;x<canvasWidth;x++){const currentIdx=y*canvasWidth+x;if(1===binaryMap[currentIdx]&&!visited[currentIdx]){const q=[[x,y]];visited[currentIdx]=1;let pixelCount=0,minX=x,maxX=x,minY=y,maxY=y;for(;0<q.length;){const[cx,cy]=q.shift();pixelCount++;minX=Math.min(minX,cx);maxX=Math.max(maxX,cx);minY=Math.min(minY,cy);maxY=Math.max(maxY,cy);const neighbors=[[0,1],[0,-1],[1,0],[-1,0]];for(const[dx,dy]of neighbors){const nx=cx+dx,ny=cy+dy,nIdx=ny*canvasWidth+nx;0<=nx&&nx<canvasWidth&&0<=ny&&ny<canvasHeight&&1===binaryMap[nIdx]&&!visited[nIdx]&&(visited[nIdx]=1,q.push([nx,ny]))}}pixelCount>minBlobPixelCount&&ctxResult.strokeRect(minX,minY,maxX-minX+1,maxY-minY+1)}}}
+        function applyConvolution(sourceGsImageData,kernel){if(!sourceGsImageData)return null;const srcData=sourceGsImageData.data,width=sourceGsImageData.width,height=sourceGsImageData.height,outputArray=new Float32Array(width*height),kernelSize=kernel.length,kernelHalf=Math.floor(kernelSize/2);let minConvOutput=Infinity,maxConvOutput=-Infinity;for(let y=0;y<height;y++)for(let x=0;x<width;x++){let sum=0;for(let ky=0;ky<kernelSize;ky++)for(let kx=0;kx<kernelSize;kx++){const imgY=y+ky-kernelHalf,imgX=x+kx-kernelHalf;if(imgY>=0&&imgY<height&&imgX>=0&&imgX<width){const _idx=(imgY*width+imgX)*4;sum+=srcData[_idx]*kernel[ky][kx]}}const currentOutputIndex=y*width+x;outputArray[currentOutputIndex]=sum;if(sum<minConvOutput)minConvOutput=sum;if(sum>maxConvOutput)maxConvOutput=sum}const outputImageData=new ImageData(new Uint8ClampedArray(4*width*height),width,height),outputData=outputImageData.data,range=maxConvOutput-minConvOutput;for(let i=0;i<outputArray.length;i++){let normVal=0;if(range>1e-4)normVal=(outputArray[i]-minConvOutput)/range*255;else if(minConvOutput!==Infinity)normVal=128;const _idx_out=i*4;outputData[_idx_out]=outputData[_idx_out+1]=outputData[_idx_out+2]=normVal;outputData[_idx_out+3]=255}return outputImageData}
+        function drawKernelVisualization(canvas,kernelMatrix){if(!canvas||!kernelMatrix||0===kernelMatrix.length)return;const ctx=canvas.getContext("2d");if(!ctx)return;const KSIZE=kernelMatrix.length,cellSize=canvas.width/KSIZE;let minVal=1/0,maxVal=-1/0;kernelMatrix.forEach(row=>row.forEach(val=>{val<minVal&&(minVal=val);val>maxVal&&(maxVal=val)}));ctx.clearRect(0,0,canvas.width,canvas.height);for(let r=0;r<KSIZE;r++)for(let c=0;c<KSIZE;c++){const val=kernelMatrix[r][c];let intensity=128;maxVal>minVal?intensity=(val-minVal)/(maxVal-minVal)*255:minVal!==1/0&&(intensity=0<val?255:val<0?0:128);intensity=Math.max(0,Math.min(255,intensity));ctx.fillStyle=`rgb(${intensity},${intensity},${intensity})`;ctx.fillRect(c*cellSize,r*cellSize,cellSize,cellSize);ctx.strokeStyle="#555";ctx.strokeRect(c*cellSize,r*cellSize,cellSize,cellSize)}}
+        function renderCnnFeatureMapsDemo(sourceImageElement){if(!cnnInputPatchCanvas||!featureMapOutputCanvases[0]||!sourceImageElement||!sourceImageElement.naturalWidth||0===sourceImageElement.naturalWidth){drawCanvasPlaceholder(cnnInputPatchCanvas,"Patch Input");featureMapOutputCanvases.forEach((c,i)=>drawCanvasPlaceholder(c,`Map ${i+1}`));kernelVizCanvases.forEach((c,i)=>drawCanvasPlaceholder(c,`K${i+1}`));kernelMatrixTexts.forEach(kd=>kd.textContent="Kernel");return}const fullWidth=sourceImageElement.naturalWidth,fullHeight=sourceImageElement.naturalHeight,patchSize=Math.min(fullWidth,fullHeight,128);cnnInputPatchCanvas.width=patchSize;cnnInputPatchCanvas.height=patchSize;const ctxOrig=cnnInputPatchCanvas.getContext("2d");if(!ctxOrig)return;const sx=(fullWidth-patchSize)/2,sy=(fullHeight-patchSize)/2;ctxOrig.drawImage(sourceImageElement,sx,sy,patchSize,patchSize,0,0,patchSize,patchSize);const gsPatchImageData=convertToGrayscale(cnnInputPatchCanvas);if(!gsPatchImageData)return;ctxOrig.putImageData(gsPatchImageData,0,0);const kernels=[{name:"Identità",k:[[0,0,0],[0,1,0],[0,0,0]]},{name:"Bordi Vert.",k:[[-1,0,1],[-2,0,2],[-1,0,1]]},{name:"Sharpen",k:[[0,-1,0],[-1,5,-1],[0,-1,0]]},{name:"Blur Leggero",k:[[1,1,1],[1,2,1],[1,1,1]].map(r=>r.map(v=>v/10))}];kernels.forEach((kInfo,index)=>{if(featureMapOutputCanvases[index]&&kernelVizCanvases[index]&&kernelMatrixTexts[index]){drawKernelVisualization(kernelVizCanvases[index],kInfo.k);kernelMatrixTexts[index].textContent=`${kInfo.name}:\n${kInfo.k.map(row=>"["+row.map(n=>n.toFixed(1).padStart(4)).join(", ")+"]").join("\n")}`;const fmCanvas=featureMapOutputCanvases[index];fmCanvas.width=patchSize;fmCanvas.height=patchSize;const fmCtx=fmCanvas.getContext("2d");if(fmCtx){const convolutedData=applyConvolution(gsPatchImageData,kInfo.k);convolutedData?fmCtx.putImageData(convolutedData,0,0):drawCanvasPlaceholder(fmCanvas,"Errore Conv")}featureMapSubtexts[index]&&(featureMapSubtexts[index].textContent=`Output: ${kInfo.name}`)}})}
+        
+        // --- Gestione Upload e Chiamate Demo ---
+        function handleFileLoad(file,triggerInput){
+            console.log("handleFileLoad: File selezionato:", file ? file.name : "Nessun file");
+            if(file){
+                const reader=new FileReader;
+                reader.onload=function(e){
+                    console.log("FileReader: onload completato.");
+                    if (e.target && e.target.result) {
+                        showContentState(e.target.result);
+                    } else {
+                        console.error("FileReader: e.target.result è nullo o indefinito.");
+                        if(initialUploadPrompt) { initialUploadPrompt.style.display = 'block'; initialUploadPrompt.textContent = "Errore lettura dati file.";}
                     }
-                    const magnitude = Math.sqrt(sumGx * sumGx + sumGy * sumGy);
-                    gradientMagnitudeData[y * width + x] = magnitude;
-                    if (magnitude > maxGradient) maxGradient = magnitude;
-                }
-            }
-            
-            if (maxGradient > 0) {
-                for (let i = 0; i < gradientMagnitudeData.length; i++) {
-                    gradientMagnitudeData[i] = (gradientMagnitudeData[i] / maxGradient) * 255;
-                }
-            }
-        }
-
-        function applyThresholdAndDrawSobel(threshold) {
-            if (!gradientMagnitudeData || !sobelCanvas || !grayscaleCanvas) return;
-
-            const width = grayscaleCanvas.width;
-            const height = grayscaleCanvas.height;
-            
-            sobelCanvas.width = width;
-            sobelCanvas.height = height;
-            const ctxSobel = sobelCanvas.getContext('2d');
-            const outputImageData = ctxSobel.createImageData(width, height);
-            const outputData = outputImageData.data;
-
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const i = y * width + x;
-                    const magnitude = gradientMagnitudeData[i] || 0;
-                    const edgeColor = magnitude > threshold ? 255 : 0;
-                    const pixelIndex = i * 4;
-                    outputData[pixelIndex] = edgeColor;
-                    outputData[pixelIndex + 1] = edgeColor;
-                    outputData[pixelIndex + 2] = edgeColor;
-                    outputData[pixelIndex + 3] = 255;
-                }
-            }
-            ctxSobel.putImageData(outputImageData, 0, 0);
-        }
-
-        function processImageForSobel(imageElement) {
-            grayscaleCanvas.width = imageElement.naturalWidth;
-            grayscaleCanvas.height = imageElement.naturalHeight;
-            const ctxGrayscale = grayscaleCanvas.getContext('2d');
-            ctxGrayscale.drawImage(imageElement, 0, 0, imageElement.naturalWidth, imageElement.naturalHeight);
-            
-            grayscaleImageData = convertToGrayscale(grayscaleCanvas);
-            ctxGrayscale.putImageData(grayscaleImageData,0,0);
-
-            applySobel(grayscaleImageData);
-        }
-
-        function handleFileLoad(file, triggerInput) {
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    showContentState(e.target.result);
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    if (triggerInput === primaryFileInput) {
-                        secondaryFileInput.files = dataTransfer.files;
-                    } else if (triggerInput === secondaryFileInput) {
-                        primaryFileInput.files = dataTransfer.files;
-                    }
+                    const dataTransfer=new DataTransfer;dataTransfer.items.add(file);
+                    if(triggerInput===primaryFileInput && secondaryFileInput) secondaryFileInput.files=dataTransfer.files;
+                    else if(triggerInput===secondaryFileInput && primaryFileInput) primaryFileInput.files=dataTransfer.files;
+                };
+                reader.onerror = function(e) {
+                    console.error("FileReader Errore:", reader.error);
+                    if(initialUploadPrompt) { initialUploadPrompt.style.display = 'block'; initialUploadPrompt.textContent = "Errore lettura file.";}
                 }
                 reader.readAsDataURL(file);
             } else {
-                if (uploadedImageDisplay.getAttribute('src') === '#' || !uploadedImageDisplay.getAttribute('src')) {
+                 console.log("handleFileLoad: Nessun file o dialogo annullato.");
+                if (mainDisplayCanvas && currentUploadedImage === null) { 
                     showInitialState();
                 }
             }
         }
         
+        // Event Listeners
         if (sobelThresholdSlider) {
             sobelThresholdSlider.addEventListener('input', function() {
                 if(thresholdValueDisplay) thresholdValueDisplay.textContent = this.value;
-                applyThresholdAndDrawSobel(parseInt(this.value));
+                const threshold = parseInt(this.value);
+                if(grayscaleImageDataForSobel && gradientMagnitudeData && demoRenderFlags.sobel && !isNumericViewActive) { 
+                    applyThresholdAndDrawSobel(threshold);
+                    if (currentUploadedImage && demoRenderFlags.lowe && loweFeaturesCanvas && loweRecognitionCanvas) {
+                         renderLoweInspiredDemo(currentUploadedImage);
+                    }
+                }
+            });
+        }
+        if (binaryThresholdSlider) {
+            binaryThresholdSlider.addEventListener('input', function(){
+                if (binaryThresholdValueDisplay) binaryThresholdValueDisplay.textContent = this.value;
+                if (currentUploadedImage && demoRenderFlags.blob && !isNumericViewActive) { 
+                    renderBlobDetectionDemo(currentUploadedImage, parseInt(this.value));
+                }
             });
         }
 
-        initialUploadPrompt.addEventListener('click', () => { primaryFileInput.click(); });
-        primaryFileInput.addEventListener('change', function() { handleFileLoad(this.files[0], this); });
-        changeImageButton.addEventListener('click', () => { secondaryFileInput.click(); });
-        secondaryFileInput.addEventListener('change', function() { handleFileLoad(this.files[0], this); });
+        if(initialUploadPrompt) initialUploadPrompt.addEventListener('click', () => { console.log("Initial prompt clicked."); if(primaryFileInput) primaryFileInput.click(); });
+        else console.error("initialUploadPrompt non trovato all'attach dell'event listener!");
 
+        if(primaryFileInput) primaryFileInput.addEventListener('change', function() { handleFileLoad(this.files[0], this); });
+        else console.error("primaryFileInput non trovato!");
+
+        if(changeImageButton) changeImageButton.addEventListener('click', () => { if(secondaryFileInput) secondaryFileInput.click(); });
+        if(secondaryFileInput) secondaryFileInput.addEventListener('change', function() { handleFileLoad(this.files[0], this); });
+        
+        if (headerTitle) {
+            headerTitle.addEventListener('click', () => {
+                console.log("Header title clicked. isNumericViewActive:", isNumericViewActive); // DEBUG
+                if (isNumericViewActive) {
+                    hideNumericView();
+                } else {
+                    if (currentUploadedImage && currentUploadedImage.complete && currentUploadedImage.naturalWidth > 0) {
+                        showNumericView();
+                    } else {
+                        console.log("Impossibile attivare vista numerica: nessuna immagine valida caricata.");
+                    }
+                }
+            });
+        } else { console.warn("headerTitle non trovato, impossibile aggiungere listener per vista numerica.");}
+        
         showInitialState();
+        console.log("Script completamente caricato e showInitialState chiamato.");
     </script>
 </body>
 </html>
